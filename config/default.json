@@ -7,6 +7,7 @@
     },
     "database": {
       "url": "mongodb://127.0.0.1/LDDK_API_DB",
+      "testUrl": "mongodb://127.0.0.1/LDDK_API_DB_TEST",
       "port": 27017,
       "options": {
         "user:": "",
