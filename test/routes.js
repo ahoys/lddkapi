@@ -21,15 +21,24 @@ const email_fail    = config.get('UNIT_TESTS.email_fail');
 const total_ok      = names_ok.length + pass_ok.length + email_ok.length;
 
 // Drops database collection.
-const dropDb = function (done) {
-    try{
-        // Connects to the database.
-        mongoose.connect(config.get('UNIT_TESTS.url'), function () {
-            mongoose.connection.db.dropDatabase(done);
-        });
-    }catch(err){
-        console.log(err);
-    }
+const dropDb = function () {
+    // Connects to the database.
+    mongoose.connect(config.get('UNIT_TESTS.url'), function () {
+        mongoose.connection.db.dropDatabase();
+    });
+};
+
+const addUsers = function () {
+    names_ok.forEach(function (item) {
+        server
+            .post('/api/users')
+            .send({
+                name: item,
+                password: pass_ok[0],
+                email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test'
+            });
+    });
+    done();
 };
 
 // Actual testing starts.
@@ -37,207 +46,159 @@ describe('Routing /users', function () {
 
     // Launches before any of the tests.
     before(function (done) {
-        dropDb(done);
+        dropDb();
+        done();
+    });
+
+    after(function (done) {
+        dropDb();
+        done();
     });
 
     async.each(names_ok, function (item, callback) {
         it('Should add users with proper name: ' + item, function (done) {
-            try{
-                var body = {
-                    name: item,
-                    password: pass_ok[0],
-                    email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test'
-                };
-                server
-                    .post('/api/users')
-                    .send(body)
-                    .expect('Content-Type', /json/)
-                    .expect(200)
-                    .end(function (err, res) {
-                        if(err){
-                            throw err;
-                        }
-                        should.equal(res.statusCode, 200);
-                    });
-            }catch(err){
-                console.log(err);
-            }
-            done();
+            var body = {
+                name: item,
+                password: pass_ok[0],
+                email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test'
+            };
+            server
+                .post('/api/users')
+                .send(body)
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end(function (err, res) {
+                    if(err){
+                        throw err;
+                    }
+                    done();
+                });
             callback();
         });
     });
 
     async.each(pass_ok, function (item, callback) {
         it('Should add users with proper password: ' + item, function (done) {
-            try{
-                var body = {
-                    name: rstr.generate({length: 6, charset: 'alphabetic'}),
-                    password: item,
-                    email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test'
-                };
-                server
-                    .post('/api/users')
-                    .send(body)
-                    .expect('Content-Type', /json/)
-                    .expect(200)
-                    .end(function (err, res) {
-                        if(err){
-                            throw err;
-                        }
-                        should.equal(res.statusCode, 200);
-                    });
-            }catch(err){
-                console.log(err);
-            }
-            done();
+            var body = {
+                name: rstr.generate({length: 6, charset: 'alphabetic'}),
+                password: item,
+                email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test'
+            };
+            server
+                .post('/api/users')
+                .send(body)
+                .expect('Content-Type', /json/)
+                .expect(200)
+                .end(function (err, res) {
+                    if(err){
+                        throw err;
+                    }
+                    done();
+                });
             callback();
         });
     });
 
     async.each(email_ok, function (item, callback) {
         it('Should add users with proper email: ' + item, function (done) {
-            try{
-                var body = {
-                    name: rstr.generate({length: 6, charset: 'alphabetic'}),
-                    password: pass_ok[0],
-                    email: item,
-                };
-                server
-                    .post('/api/users')
-                    .send(body)
-                    .expect('Content-Type', /json/)
-                    .expect(200)
-                    .end(function (err, res) {
-                        if(err){
-                            throw err;
-                        }
-                        should.equal(res.statusCode, 200);
-                    });
-            }catch(err){
-                console.log(err);
-            }
-            done();
-            callback();
-        });
-    });
-
-    it('Should get all users: ' + total_ok, function (done) {
-        try {
+            var body = {
+                name: rstr.generate({length: 6, charset: 'alphabetic'}),
+                password: pass_ok[0],
+                email: item
+            };
             server
-                .get('/api/users')
+                .post('/api/users')
+                .send(body)
                 .expect('Content-Type', /json/)
                 .expect(200)
                 .end(function (err, res) {
                     if(err){
                         throw err;
                     }
-                    should.equal(res.statusCode, 200);
-                    should.equal(Object.keys(res.body).length, total_ok);
+                    done();
                 });
-        }catch(err){
-            console.log(err);
-        }
-        dropDb(done)
+            callback();
+        });
+    });
+
+    it('Should get all users: ' + total_ok, function (done) {
+        server
+            .get('/api/users')
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end(function (err, res) {
+                if(err){
+                    throw err;
+                }
+                should.equal(Object.keys(res.body).length, total_ok);
+                done();
+            });
     });
 
     async.each(names_fail, function (item, callback) {
         it('Should not add users with an improper name: ' + item, function (done) {
-            try{
-                var body = {
-                    name: item,
-                    password: pass_ok[0],
-                    email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test',
-                };
-                server
-                    .post('/api/users')
-                    .send(body)
-                    .expect('Content-Type', /json/)
-                    .expect(400)
-                    .end(function (err, res) {
-                        if(err){
-                            throw err;
-                        }
-                        should.equal(res.statusCode, 400);
-                    });
-            }catch(err){
-                console.log(err);
-            }
-            done();
+            var body = {
+                name: item,
+                password: pass_ok[0],
+                email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test'
+            };
+            server
+                .post('/api/users')
+                .send(body)
+                .expect('Content-Type', /json/)
+                .expect(400)
+                .end(function (err, res) {
+                    if(err){
+                        throw err;
+                    }
+                    done();
+                });
             callback();
         });
     });
 
     async.each(pass_fail, function (item, callback) {
         it('Should not add users with an improper password: ' + item, function (done) {
-            try{
-                var body = {
-                    name: rstr.generate({length: 6, charset: 'alphabetic'}),
-                    password: item,
-                    email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test',
-                };
-                server
-                    .post('/api/users')
-                    .send(body)
-                    .expect('Content-Type', /json/)
-                    .expect(400)
-                    .end(function (err, res) {
-                        if(err){
-                            throw err;
-                        }
-                        should.equal(res.statusCode, 400);
-                    });
-            }catch(err){
-                console.log(err);
-            }
-            done();
+            var body = {
+                name: rstr.generate({length: 6, charset: 'alphabetic'}),
+                password: item,
+                email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test'
+            };
+            server
+                .post('/api/users')
+                .send(body)
+                .expect('Content-Type', /json/)
+                .expect(400)
+                .end(function (err, res) {
+                    if(err){
+                        throw err;
+                    }
+                    done();
+                });
             callback();
         });
     });
 
     async.each(email_fail, function (item, callback) {
         it('Should not add users with an improper email: ' + item, function (done) {
-            try{
-                var body = {
-                    name: rstr.generate({length: 6, charset: 'alphabetic'}),
-                    password: pass_ok[0],
-                    email: item,
-                };
-                server
-                    .post('/api/users')
-                    .send(body)
-                    .expect('Content-Type', /json/)
-                    .expect(400)
-                    .end(function (err, res) {
-                        if(err){
-                            throw err;
-                        }
-                        should.equal(res.statusCode, 400);
-                    });
-            }catch(err){
-                console.log(err);
-            }
-            done();
-            callback();
-        });
-    });
-
-    it('Should find an empty database.', function (done) {
-        try {
+            var body = {
+                name: rstr.generate({length: 6, charset: 'alphabetic'}),
+                password: pass_ok[0],
+                email: item
+            };
             server
-                .get('/api/users')
+                .post('/api/users')
+                .send(body)
                 .expect('Content-Type', /json/)
-                .expect(200)
+                .expect(400)
                 .end(function (err, res) {
                     if(err){
                         throw err;
                     }
-                    should.equal(res.statusCode, 200);
-                    should.equal(Object.keys(res.body).length, 0);
+                    done();
                 });
-        }catch(err){
-            console.log(err);
-        }
-        dropDb(done)
+            callback();
+        });
     });
 
 });
