@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 // Get routes.
-const router        = require('./routes')(express);
+const router        = require('./src/routes/index')(express);
 
 // Initialize and connect the database.
 mongoose.connect(config.get('database.url'), config.get('database.port'), config.get('database.options'));

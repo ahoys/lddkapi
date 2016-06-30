@@ -17,6 +17,9 @@ const pass_fail     = config.get('UNIT_TESTS.pass_fail');
 const email_ok      = config.get('UNIT_TESTS.email_ok');
 const email_fail    = config.get('UNIT_TESTS.email_fail');
 
+const users_should_have         = ['name', 'email', 'lastModified', 'lastAccess', 'created', 'access'];
+const users_should_not_have     = ['id', '_id', 'password', 'pass', 'token'];
+
 // Total OK for a reference.
 const total_ok      = names_ok.length + pass_ok.length + email_ok.length;
 
@@ -151,6 +154,14 @@ describe('Routing /users', function () {
                     throw err;
                 }
                 should.equal(Object.keys(res.body).length, names_ok.length);
+                res.body.forEach(function (item) {
+                    users_should_have.forEach(function (demand) {
+                        item.should.have.property(demand).which.is.a.String();
+                    });
+                    users_should_not_have.forEach(function (demand) {
+                        item.should.not.have.property(demand)
+                    });
+                });
                 done();
             });
     });
@@ -219,6 +230,47 @@ describe('Routing /users', function () {
                     done();
                 });
         });
+    });
+
+    // --------------------------------------------------------------------------------------
+    // GET /user/:user_name, 200
+
+    it('Should get an user', function (done) {
+        dropDb();
+        var name = rstr.generate({length: 6, charset: 'ABCDEFGH'});
+        var body = {
+            name: name,
+            password: pass_ok[0],
+            email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test'
+        };
+        server
+            .post('/api/users')
+            .send(body)
+            .expect('Content-Type', /json/)
+            .end(function (err, res) {
+                if(err){
+                    throw err;
+                }
+            });
+        server
+            .get('/api/users/' + name)
+            .expect('Content-Type', /json/)
+            .expect(200)
+            .end(function (err, res) {
+                if(err){
+                    throw err;
+                }
+                var user = res.body;
+                // Name should be lowercase by now.
+                should.equal(user.name, name.toLowerCase());
+                users_should_have.forEach(function (demand) {
+                    user.should.have.property(demand).which.is.a.String();
+                });
+                users_should_not_have.forEach(function (demand) {
+                    user.should.not.have.property(demand)
+                });
+                done();
+            });
     });
 
 });
