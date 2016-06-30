@@ -14,7 +14,7 @@ module.exports = ((router) => {
                     return false;
                 }else{
                     // Users found.
-                    log('routes:users', 'GET /users successful.', users);
+                    log('routes:users', 'GET /users successful.');
                     response.json(users);
                     return true;
                 }
