@@ -9,10 +9,7 @@
     "webpack": "~1.13.1",
     "immutable": "~3.8.1",
     "config": "~1.21.0",
-    "mocha": "~2.5.3",
     "expect.js": "~0.3.1",
-    "should": "~9.0.2",
-    "supertest": "~1.2.0",
     "async": "~2.0.0-rc.6",
     "lodash": "~4.13.1"
   },
