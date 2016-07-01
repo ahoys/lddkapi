@@ -42,22 +42,4 @@ const UserSchema    = new Schema({
     }
 });
 
-/**
- * Validates user access.
- * @type {function()}
- * @return {Boolean} has access
- */
-UserSchema.statics.validateAccess = ((user, name, password) => {
-    try{
-        if(user.name === name.toLowerCase() && user.password === password){
-            return true;
-        }else{
-            return false;
-        }
-    }catch(err){
-        console.log(err);
-        return false;
-    }
-});
-
 module.exports = mongoose.model('User', UserSchema);
