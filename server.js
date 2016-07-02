@@ -1,5 +1,5 @@
 // Base setup.
-const babel         = require('babel-core');
+require('babel-core/register');
 const mongoose      = require('mongoose');
 const bodyParser    = require('body-parser');
 const express       = require('express');
