@@ -2,12 +2,13 @@
 const mongoose      = require('mongoose');
 const supertest     = require('supertest');
 const expect        = require('expect.js');
-const lodash        = require('lodash');
 const should        = require('should');
 const async         = require('async');
 const rstr          = require('randomstring');
 const config        = require('config');
 const server        = supertest.agent('http://localhost:8080');
+
+require('async/series');
 
 // Testable strings.
 const names_ok      = config.get('UNIT_TESTS.names_ok');
@@ -20,28 +21,12 @@ const email_fail    = config.get('UNIT_TESTS.email_fail');
 const users_should_have         = ['name', 'email', 'lastModified', 'lastAccess', 'created', 'access'];
 const users_should_not_have     = ['id', '_id', 'password', 'pass', 'token'];
 
-// Total OK for a reference.
-const total_ok      = names_ok.length + pass_ok.length + email_ok.length;
-
 // Drops database collection.
 const dropDb = function () {
     // Connects to the database.
     mongoose.connect(config.get('UNIT_TESTS.url'), function () {
         mongoose.connection.db.dropDatabase();
     });
-};
-
-const addUsers = function () {
-    names_ok.forEach(function (item) {
-        server
-            .post('/api/users')
-            .send({
-                name: item,
-                password: pass_ok[0],
-                email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test'
-            });
-    });
-    done();
 };
 
 // Actual testing starts.
@@ -128,42 +113,54 @@ describe('Routing /users', function () {
     // GET /users, 200
 
     it('Should get all users: ' + names_ok.length, function (done) {
-        dropDb();
-        names_ok.forEach(function (item) {
-            var body = {
-                name: item,
-                password: pass_ok[0],
-                email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test'
-            };
-            server
-                .post('/api/users')
-                .send(body)
-                .expect('Content-Type', /json/)
-                .end(function (err, res) {
-                    if(err){
-                        throw err;
-                    }
+        async.series([
+            function(callback){
+                dropDb();
+                names_ok.forEach(function (item) {
+                    var body = {
+                        name: item,
+                        password: pass_ok[0],
+                        email: rstr.generate({length: 4, charset: 'alphabetic'}) + '@test.test'
+                    };
+                    server
+                        .post('/api/users')
+                        .send(body)
+                        .expect('Content-Type', /json/)
+                        .end(function (err, res) {
+                            if(err){
+                                return callback(err);
+                            }
+                        });
                 });
-        });
-        server
-            .get('/api/users')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end(function (err, res) {
-                if(err){
-                    throw err;
-                }
-                should.equal(Object.keys(res.body).length, names_ok.length);
-                res.body.forEach(function (item) {
-                    users_should_have.forEach(function (demand) {
-                        item.should.have.property(demand).which.is.a.String();
+                return callback(null);
+            },
+            function(callback){
+                server
+                    .get('/api/users')
+                    .expect('Content-Type', /json/)
+                    .expect(200)
+                    .end(function (err, res) {
+                        if(err){
+                            return callback(err);
+                        }
+                        return callback(null, res);
                     });
-                    users_should_not_have.forEach(function (demand) {
-                        item.should.not.have.property(demand)
-                    });
+            }
+        ], function(err, res){
+            if(err){
+                return false;
+            }
+            should.equal(Object.keys(res[1].body).length, names_ok.length);
+            res[1].body.forEach(function (item) {
+                users_should_have.forEach(function (demand) {
+                    item.should.have.property(demand).which.is.a.String();
                 });
-                done();
+                users_should_not_have.forEach(function (demand) {
+                    item.should.not.have.property(demand)
+                });
             });
+            done();
+        });
     });
 
     // --------------------------------------------------------------------------------------
