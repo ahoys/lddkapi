@@ -24,7 +24,8 @@
       }
     },
     "routes": {
-      "allowedMethods": ["GET", "POST", "PUT", "DELETE"]
+      "allowedMethods": ["GET", "POST", "PUT", "DELETE"],
+      "userSchemaValues": ["name", "email", "lastModified", "lastAccess", "created", "access"]
     }
   },
   "DEBUG": {
