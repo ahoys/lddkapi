@@ -1,6 +1,7 @@
 const User      = require('../models/userSchema');
 const config    = require('config').get('API.routes');
-const debug     = require('../util/debug')('routes:users');
+const debug     = require('debug');
+let log         = debug('Routes:Users');
 
 module.exports = ((router) => {
 
@@ -14,7 +15,7 @@ module.exports = ((router) => {
                     return false;
                 }else{
                     // Users found.
-                    debug.log('routes:users', 'GET /users successful.');
+                    log('GET successful.');
                     response.json(users);
                     return true;
                 }
@@ -40,7 +41,7 @@ module.exports = ((router) => {
                         return false;
                     }else{
                         // User saved.
-                        log('routes:users', 'POST /users successful.');
+                        log('POST successful.');
                         response.json({ message: 'New user added.' });
                         return true;
                     }
@@ -55,7 +56,7 @@ module.exports = ((router) => {
                         response.status(404).send({ message: 'The requested user was not found.' });
                         return false;
                     }else{
-                        log('routes:users', 'GET /users/:user_name successful.');
+                        log('GET single user successful.');
                         response.json(user);
                         return true;
                     }
@@ -74,7 +75,7 @@ module.exports = ((router) => {
                         if (user.access != 'owner') {
                             user.access = request.body.access;
                         } else {
-                            log('routes:users', 'PUT /users/:user_id tried to modify owner.');
+                            log('PUT tried to modify owner.');
                             response.status(401).send('Modifying owner status is not allowed.');
                             return;
                         }
@@ -90,7 +91,7 @@ module.exports = ((router) => {
                             response.status(400).send(err);
                             return false;
                         } else {
-                            log('routes:users', 'PUT /users/:user_id successful.');
+                            log('PUT successful.');
                             response.json({message: 'User modified'});
                             return true;
                         }
@@ -106,7 +107,7 @@ module.exports = ((router) => {
                         response.status(404).send({ message: 'The requested user was not found.' });
                         return false;
                     }else{
-                        log('routes:users', 'DELETE /users/:user_id successful.');
+                        log('DELETE successful.');
                         response.json({ message: 'User removed.' });
                         return true;
                     }

@@ -1,6 +1,8 @@
-const log                   = require('../util/debug');
+const debug                 = require('debug');
+let log                     = debug('Routes:Users');
 const allowedMethods        = require('config').get('API.routes.allowedMethods');
 const express               = require('express');
+
 
 module.exports = ((express) => {
 
@@ -12,7 +14,7 @@ module.exports = ((express) => {
         try{
             if(allowedMethods.indexOf(request.method) < 0){
                 // Method not allowed.
-                log('routes:index', 'received request ' + request.method + ' was unrecognized and ignored.');
+                log('The request was unrecognized.');
                 response.status(405).end('Allowed methods: ' + allowedMethods);
                 return;
             }else{
@@ -20,7 +22,7 @@ module.exports = ((express) => {
             }
         }catch(err){
             // Something went wrong.
-            log('routes:index', 'something went wrong: ' + err);
+            log('Middleware encountered an error: ', err);
             response.status(500).end();
             return;
         }
