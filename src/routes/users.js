@@ -1,6 +1,6 @@
 const User      = require('../models/userSchema');
 const config    = require('config').get('API.routes');
-const log       = require('../util/debug');
+const debug     = require('../util/debug')('routes:users');
 
 module.exports = ((router) => {
 
@@ -14,7 +14,7 @@ module.exports = ((router) => {
                     return false;
                 }else{
                     // Users found.
-                    log('routes:users', 'GET /users successful.');
+                    debug.log('routes:users', 'GET /users successful.');
                     response.json(users);
                     return true;
                 }
