@@ -19,7 +19,7 @@ const UserSchema    = new Schema({
     access: {
         type: String,
         default: 'regular',
-        enum: ['regular', 'moderator', 'admin', 'owner'],
+        enum: ['regular', 'moderator', 'admin', 'owner', 'demo'],
         select: true
     },
     email: {
