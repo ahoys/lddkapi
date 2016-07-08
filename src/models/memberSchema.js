@@ -40,7 +40,7 @@ const memberSchema  = new Schema({
     },
     history: {
         type: [Schema.Types.ObjectId],
-        ref: 'MemberHistory'
+        ref: 'History'
     },
     meetings: {
         type: [Schema.Types.ObjectId],
