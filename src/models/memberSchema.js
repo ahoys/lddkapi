@@ -1,7 +1,7 @@
 const mongoose      = require('mongoose');
 const Schema        = mongoose.Schema;
 
-const memberSchema  = new Schema({
+const MemberSchema  = new Schema({
     nickname: {
         type: String,
         required: true
@@ -49,4 +49,4 @@ const memberSchema  = new Schema({
     }
 }, { strict: true });
 
-module.exports = mongoose.model('Member', memberSchema);
+module.exports = mongoose.model('Member', MemberSchema);
