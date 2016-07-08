@@ -14,6 +14,10 @@ const memberSchema  = new Schema({
         type: Date,
         default: Date.now
     },
+    rank: {
+        type: Schema.types.ObjectId,
+        ref: 'Rank'
+    },
     training: {
         type: Schema.Types.ObjectId,
         ref: 'Training'
