@@ -14,7 +14,7 @@ const MeetingSchema    = new Schema({
     },
     description: {
         type: String,
-        validation: [/^(?=.*[a-zA-Z])[a-zA-Z0-9äÄöÖåÅ! '"-.,*()]{3,48}$/, 'Must have a-z or A-Z, and be between 3-48.']
+        validation: [/^(?=.*[a-zA-Z])[a-zA-Z0-9äÄöÖåÅ! '"-.,*()]{3,1024}$/, 'Must have a-z or A-Z, and be between 3-48.']
     },
     date: {
         type: Date,
