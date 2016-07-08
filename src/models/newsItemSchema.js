@@ -1,7 +1,7 @@
-const mongoose      = require('mongoose');
-const Schema        = mongoose.Schema;
+const mongoose          = require('mongoose');
+const Schema            = mongoose.Schema;
 
-const newsSchema    = new Schema({
+const newsItemSchema    = new Schema({
     _author: {
         type: Schema.Types.ObjectId,
         ref: 'User',
@@ -27,4 +27,4 @@ const newsSchema    = new Schema({
     }
 }, { strict: true });
 
-module.exports = mongoose.model('NewsItem', newsSchema);
+module.exports = mongoose.model('NewsItem', newsItemSchema);
