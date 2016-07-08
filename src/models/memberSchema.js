@@ -12,7 +12,8 @@ const memberSchema  = new Schema({
     },
     recruited: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+        required: true
     },
     rank: {
         type: Schema.types.ObjectId,
