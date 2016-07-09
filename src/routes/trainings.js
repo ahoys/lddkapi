@@ -35,10 +35,10 @@ module.exports = ((router) => {
             });
         });
 
-    router.route('/trainings/:training_abbreviation')
+    router.route('/trainings/:training')
 
         .get((request, response) => {
-            Training.findOne(request.param.abbreviation, '-_id, abbreviation title description', (err, training) => {
+            Training.findOne(request.param.training, '-_id, abbreviation title description', (err, training) => {
                 if(err){
                     response.status(404).send(err);
                     return false;
@@ -50,7 +50,7 @@ module.exports = ((router) => {
         })
 
         .put((request, response) => {
-            Training.findOne(request.param.abbreviation, (err, training) => {
+            Training.findOne(request.param.training, (err, training) => {
                 if(err){
                     response.status(400).send(err);
                     return false;
