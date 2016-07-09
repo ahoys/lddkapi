@@ -2,11 +2,6 @@ const mongoose          = require('mongoose');
 const Schema            = mongoose.Schema;
 
 const memberEventSchema = new Schema({
-    _subject: {
-        type: Schema.Types.ObjectId,
-        ref: 'Member',
-        required: true
-    },
     title: {
         type: String,
         validation: [/^[a-zA-Z0-9äÄöÖåÅ!?–— '"-.,*()]{1,48}$/, 'Must have a-z or A-Z, and be between 3-48.'],
