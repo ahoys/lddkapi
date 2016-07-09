@@ -77,7 +77,7 @@ module.exports = ((router) => {
                         response.status(404).send(err);
                         return false;
                     }
-                    log('GET ', member.nickname,' successful.');
+                    log('GET ', member.nickname, ' successful.');
                     response.json(member);
                     return true;
             });
