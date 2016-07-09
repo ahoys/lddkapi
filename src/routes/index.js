@@ -36,7 +36,7 @@ module.exports = ((express) => {
     // require('./ranks')(router);
     // require('./decorations')(router);
     // require('./ribbons')(router);
-    // require('./trainings')(router);
+    require('./trainings')(router);
     // require('./histories')(router);
     // require('./news')(router);
 

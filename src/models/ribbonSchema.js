@@ -5,7 +5,8 @@ const RibbonSchema    = new Schema({
     abbreviation: {
         type: String,
         validation: [/^(?=.*[A-Z])[A-Z0-9ÄÖÅ]{2,16}$/, 'Abbreviation must be between 2-16 and only A-Z, 0-9'],
-        required: true
+        required: true,
+        unique: true
     },
     title: {
         type: String,
