@@ -15,35 +15,35 @@ const MemberSchema  = new Schema({
         default: Date.now,
         required: true
     },
-    rank: {
+    _rank: {
         type: Schema.types.ObjectId,
         ref: 'Rank'
     },
-    training: {
+    _training: {
         type: Schema.Types.ObjectId,
         ref: 'Training'
     },
-    group: {
+    _group: {
         type: Schema.Types.ObjectId,
         ref: 'Group'
     },
-    medals: {
+    _medals: {
         type: [Schema.Types.ObjectId],
         ref: 'Medal'
     },
-    decorations: {
+    _decorations: {
         type: [Schema.Types.ObjectId],
         ref: 'Decoration'
     },
-    ribbons: {
+    _ribbons: {
         type: [Schema.Types.ObjectId],
         ref: 'Ribbon'
     },
-    history: {
+    _history: {
         type: [Schema.Types.ObjectId],
         ref: 'History'
     },
-    meetings: {
+    _meetings: {
         type: [Schema.Types.ObjectId],
         ref: 'Meeting'
     }
