@@ -9,9 +9,16 @@ const DecorationSchema    = new Schema({
         unique: true
     },
     title: {
-        type: String,
-        validation: [/^[a-zA-Z0-9äÄöÖåÅ!?–— '"-.,*()]{1,48}$/, 'Must have a-z or A-Z, and be between 3-48.'],
-        required: true
+        fi: {
+            type: String,
+            validation: [/^[a-zA-Z0-9äÄöÖåÅ]{1,48}$/, 'Must have a-z or A-Z, and be between 3-48.'],
+            default: ''
+        },
+        en: {
+            type: String,
+            validation: [/^[a-zA-Z0-9]{1,48}$/, 'Must have a-z or A-Z, and be between 3-48.'],
+            default: ''
+        }
     },
     description: {
         type: String,
