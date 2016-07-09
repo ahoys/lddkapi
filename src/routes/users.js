@@ -64,39 +64,26 @@ module.exports = ((router) => {
         })
 
         .put((request, response) => {
-                User.findById(request.params.user_id, (err, user) => {
-                    // If errors while fetching the user.
-                    if (err || !user) {
-                        response.status(404).send({ message: 'The requested user was not found.' });
+            User.findOne(request.param.name, (err, user) => {
+                if(err){
+                    response.status(400).send(err);
+                    return false;
+                }
+                user.name = request.body.name;
+                user.password = request.body.password;
+                user.access = request.body.access;
+                user.email = request.body.email;
+                user.lastModified = Date.now();
+                user.save((err) => {
+                    if(err){
+                        response.status(400).send(err);
                         return false;
                     }
-                    // Owner access can not be changed.
-                    if(request.body.access != user.access){
-                        if (user.access != 'owner') {
-                            user.access = request.body.access;
-                        } else {
-                            log('PUT tried to modify owner.');
-                            response.status(401).send('Modifying owner status is not allowed.');
-                            return;
-                        }
-                    }
-                    // Make the modifications.
-                    user.name = request.body.name;
-                    user.password = request.body.password;
-                    user.email = request.body.email;
-                    user.lastModified = Date.now();
-                    // Save the modifications.
-                    user.save((err) => {
-                        if (err) {
-                            response.status(400).send(err);
-                            return false;
-                        } else {
-                            log('PUT successful.');
-                            response.json({message: 'User modified'});
-                            return true;
-                        }
-                    });
+                    log('PUT ', user.name, ' successful.');
+                    response.json({ message: 'The requested user was modified.' });
+                    return true;
                 });
+            });
         })
 
         .delete((request, response) => {
