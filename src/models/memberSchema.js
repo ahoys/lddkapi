@@ -1,5 +1,6 @@
 const mongoose      = require('mongoose');
 const Schema        = mongoose.Schema;
+const MemberEvent   = require('../models/memberEventSchema');
 
 const MemberSchema  = new Schema({
     nickname: {
@@ -20,6 +21,9 @@ const MemberSchema  = new Schema({
         type: Date,
         default: Date.now,
         required: true
+    },
+    memberEvents: {
+        type: [MemberEvent]
     },
     _rank: {
         type: Schema.types.ObjectId,
@@ -44,10 +48,6 @@ const MemberSchema  = new Schema({
     _ribbons: {
         type: [Schema.Types.ObjectId],
         ref: 'Ribbon'
-    },
-    _history: {
-        type: [Schema.Types.ObjectId],
-        ref: 'History'
     },
     _meetings: {
         type: [Schema.Types.ObjectId],

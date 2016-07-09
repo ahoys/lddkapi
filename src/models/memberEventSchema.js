@@ -1,7 +1,7 @@
 const mongoose          = require('mongoose');
 const Schema            = mongoose.Schema;
 
-const HistorySchema = new Schema({
+const memberEventSchema = new Schema({
     _subject: {
         type: Schema.Types.ObjectId,
         ref: 'Member',
@@ -23,4 +23,4 @@ const HistorySchema = new Schema({
     }
 }, { strict: true });
 
-module.exports = mongoose.model('History', HistorySchema);
+module.exports = mongoose.model('MemberEvent', memberEventSchema);
