@@ -4,11 +4,17 @@ const Schema        = mongoose.Schema;
 const MemberSchema  = new Schema({
     nickname: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        validate: [/^([a-zA-Z0-9AäÖöÅå !_-]){1,32}$/, 'Nickname can only contain a-zA-Z0-9AäÖöÅå !_- and be 1-32 in length.']
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        min: 5,
+        max: 244,
+        validate: [/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, 'Not valid email address.']
     },
     recruited: {
         type: Date,
