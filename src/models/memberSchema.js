@@ -23,7 +23,7 @@ const MemberSchema  = new Schema({
         required: true
     },
     memberEvents: {
-        type: [MemberEvent]
+        type: MemberEvent
     },
     _rank: {
         type: Schema.types.ObjectId,
