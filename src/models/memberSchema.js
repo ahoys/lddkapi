@@ -25,31 +25,31 @@ const MemberSchema  = new Schema({
     memberEvents: {
         type: MemberEvent
     },
-    _rank: {
+    rank: {
         type: Schema.types.ObjectId,
         ref: 'Rank'
     },
-    _training: {
+    training: {
         type: Schema.Types.ObjectId,
         ref: 'Training'
     },
-    _group: {
+    group: {
         type: Schema.Types.ObjectId,
         ref: 'Group'
     },
-    _medals: {
+    medals: {
         type: [Schema.Types.ObjectId],
         ref: 'Medal'
     },
-    _decorations: {
+    decorations: {
         type: [Schema.Types.ObjectId],
         ref: 'Decoration'
     },
-    _ribbons: {
+    ribbons: {
         type: [Schema.Types.ObjectId],
         ref: 'Ribbon'
     },
-    _meetings: {
+    meetings: {
         type: [Schema.Types.ObjectId],
         ref: 'Meeting'
     }
