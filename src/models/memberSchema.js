@@ -26,7 +26,7 @@ const MemberSchema  = new Schema({
         type: MemberEvent
     },
     rank: {
-        type: Schema.types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'Rank'
     },
     training: {
