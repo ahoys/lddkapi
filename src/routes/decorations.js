@@ -33,10 +33,17 @@ module.exports = ((router) => {
             });
         });
 
-    router.route('/decorations/:decoration_abbreviation')
+    router.route('/decorations/:decoration')
 
         .get((request, response) => {
-
+            Decoration.findOne({'abbreviation.en': request.params.decoration}, '-_id abbreviation title description', (err, decoration) => {
+                if(err){
+                    response.status(400).send(err);
+                    return false;
+                }
+                response.json(decoration);
+                return true;
+            });
         })
 
         .put((request, response) => {
