@@ -18,4 +18,4 @@ const RankSchema        = new Schema({
     }
 }, { strict: true });
 
-module.exports = mongoose.model('Ribbon', RankSchema);
+module.exports = mongoose.model('Rank', RankSchema);
