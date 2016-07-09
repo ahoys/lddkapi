@@ -84,20 +84,7 @@ module.exports = ((router) => {
         })
 
         .put((request, response) => {
-            Member.findOne(request.param.nickname,
-                '-_id ' +
-                'nickname ' +
-                'email ' +
-                'recruited ' +
-                'memberEvents ' +
-                'rank ' +
-                'training ' +
-                'group ' +
-                'medals ' +
-                'decorations ' +
-                'ribbons ' +
-                'meetings',
-                (err, member) => {
+            Member.findOne(request.param.nickname, (err, member) => {
                     if(err){
                         response.status(400).send(err);
                         return false;
