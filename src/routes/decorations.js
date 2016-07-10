@@ -36,7 +36,6 @@ module.exports = ((router) => {
         .get((request, response) => {
             const target = {};
             target['abbreviation' + request.localization] = request.params.decoration;
-            console.log(target);
             Decoration.findOne(
                 target,
                 '-_id' +
@@ -46,7 +45,13 @@ module.exports = ((router) => {
                 (err, decoration) => {
                     if(err){ return next(err); }
                     response.header('Content-Language', request.localization_response);
-                    response.json(decoration);
+                    if(!decoration){
+                        response.status(404).json({
+                            message: 'No content. Make sure you have set Accept-Language Header'
+                        });
+                    }else{
+                        response.json(decoration);
+                    }
                     return true;
             });
         })
