@@ -15,7 +15,7 @@ module.exports = ((express) => {
             request.localization = '.' + request_lang;
             request.localization_response = request_lang;
         }else{
-            request.localization = '';
+            request.localization = '.en';
             request.localization_response = languages;
         }
         // Begin actual processing.

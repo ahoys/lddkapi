@@ -34,8 +34,11 @@ module.exports = ((router) => {
     router.route('/decorations/:decoration')
 
         .get((request, response) => {
+            const target = {};
+            target['abbreviation' + request.localization] = request.params.decoration;
+            console.log(target);
             Decoration.findOne(
-                request.param.decoration,
+                target,
                 '-_id' +
                 ' abbreviation' + request.localization +
                 ' title' + request.localization +
