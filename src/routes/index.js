@@ -1,7 +1,8 @@
 const debug                 = require('debug');
 let log                     = debug('Routes:Users');
-const allowedMethods        = require('config').get('API.routes.allowedMethods');
 const express               = require('express');
+const allowedMethods        = require('config').get('API.routes.allowedMethods');
+const languages             = require('config').get('API.routes.languages');
 
 
 module.exports = ((express) => {
@@ -16,15 +17,24 @@ module.exports = ((express) => {
                 // Method not allowed.
                 log('The request was unrecognized.');
                 response.status(405).end('Allowed methods: ' + allowedMethods);
-                return;
+                return false;
             }else{
+                // Setup localization.
+                const request_lang = request.header('Accept-Language');
+                if(languages.indexOf(request_lang) !== -1){
+                    request.localization = '.' + request_lang;
+                    request.localization_response = request_lang;
+                }else{
+                    request.localization = '';
+                    request.localization_response = languages;
+                }
                 next();
             }
         }catch(err){
             // Something went wrong.
             log('Middleware encountered an error: ', err);
             response.status(500).end();
-            return;
+            return false;
         }
     });
 
