@@ -39,7 +39,6 @@ module.exports = ((router) => {
             const lang = languages.indexOf(request.header('Accept-Language')) !== -1
                 ? '.' + request.header('Accept-Language')
                 : '' ;
-            console.log(lang);
             Decoration.findOne(
                 request.params.decoration,
                 '-_id' +
@@ -51,7 +50,11 @@ module.exports = ((router) => {
                     response.status(400).send(err);
                     return false;
                 }
-                response.header('Content-Language', request.header('Accept-Language'));
+                response.header(
+                    'Content-Language', lang !== ''
+                        ? request.header('Accept-Language')
+                        : languages
+                );
                 response.json(decoration);
                 return true;
             });
