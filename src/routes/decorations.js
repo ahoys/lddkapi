@@ -1,8 +1,6 @@
 const Decoration            = require('../models/decorationSchema');
-const acceptLanguage        = require('accept-language');
 const debug                 = require('debug');
-const log                   = debug('Routes:Decorations');
-acceptLanguage.languages    = (['en-US', 'fi-FI']);
+const languages             = require('config').get('API.routes.languages');
 
 module.exports = ((router) => {
 
@@ -38,14 +36,12 @@ module.exports = ((router) => {
     router.route('/decorations/:decoration')
 
         .get((request, response) => {
-            let lang = acceptLanguage.get(request.header('Accept-Language'));
+            const lang = languages.indexOf(request.header('Accept-Language')) !== -1
+                ? '.' + request.header('Accept-Language')
+                : '' ;
             console.log(lang);
-            lang = lang !== void 0 ? '.' + lang : '.en' ;
-            const target = {};
-            target['abbreviation' + lang] = request.params.decoration;
-            console.log(target);
             Decoration.findOne(
-                target,
+                request.params.decoration,
                 '-_id' +
                 ' abbreviation' + lang +
                 ' title' + lang +
@@ -66,7 +62,16 @@ module.exports = ((router) => {
         })
 
         .delete((request, response) => {
-
+            Decoration.remove({
+                abbreviation: request.params.abbreviation
+            }, (err, decoration) => {
+                if(err){
+                    response.status(404).send(err);
+                    return false;
+                }
+                response.json({ message: 'The requested decoration was removed.' });
+                return true;
+            });
         });
 
 });
