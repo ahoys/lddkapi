@@ -5,10 +5,16 @@ module.exports = ((router) => {
     router.route('/decorations')
 
         .get((request, response) => {
-            Decoration.find({}, '-_id', (err, decorations) => {
-                if(err){ return next(err); }
-                response.json(decorations);
-                return true;
+            Decoration.find({},
+                '-_id' +
+                ' abbreviation' + request.localization +
+                ' title' + request.localization +
+                ' description' + request.localization,
+                (err, decorations) => {
+                    if(err){ return next(err); }
+                    response.header('Content-Language', request.localization_response);
+                    response.json(decorations);
+                    return true;
             })
         })
 
@@ -29,16 +35,16 @@ module.exports = ((router) => {
 
         .get((request, response) => {
             Decoration.findOne(
-                request.params.decoration,
+                request.param.decoration,
                 '-_id' +
                 ' abbreviation' + request.localization +
                 ' title' + request.localization +
                 ' description' + request.localization,
                 (err, decoration) => {
-                if(err){ return next(err); }
-                response.header('Content-Language', request.localization_response);
-                response.json(decoration);
-                return true;
+                    if(err){ return next(err); }
+                    response.header('Content-Language', request.localization_response);
+                    response.json(decoration);
+                    return true;
             });
         })
 
