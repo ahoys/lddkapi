@@ -1,41 +1,38 @@
-const debug                 = require('debug');
-let log                     = debug('Routes:Users');
 const express               = require('express');
-const allowedMethods        = require('config').get('API.routes.allowedMethods');
 const languages             = require('config').get('API.routes.languages');
-
 
 module.exports = ((express) => {
 
-    // The router.
     const router = express.Router();
 
-    // Middleware to use for all requests.
+    /**
+     * The main middleware for requests.
+     */
     router.use((request, response, next) => {
-        try{
-            if(allowedMethods.indexOf(request.method) < 0){
-                // Method not allowed.
-                log('The request was unrecognized.');
-                response.status(405).end('Allowed methods: ' + allowedMethods);
-                return false;
-            }else{
-                // Setup localization.
-                const request_lang = request.header('Accept-Language');
-                if(languages.indexOf(request_lang) !== -1){
-                    request.localization = '.' + request_lang;
-                    request.localization_response = request_lang;
-                }else{
-                    request.localization = '';
-                    request.localization_response = languages;
-                }
-                next();
-            }
-        }catch(err){
-            // Something went wrong.
-            log('Middleware encountered an error: ', err);
-            response.status(500).end();
-            return false;
+        // Setup localization.
+        const request_lang = request.header('Accept-Language');
+        if(languages.indexOf(request_lang) !== -1){
+            request.localization = '.' + request_lang;
+            request.localization_response = request_lang;
+        }else{
+            request.localization = '';
+            request.localization_response = languages;
         }
+        // Begin actual processing.
+        next();
+    });
+
+    /**
+     * Production error handler.
+     * No stack traces given.
+     * Use "return next(err);" to call.
+     */
+    router.use((err, request, response, next) => {
+        response.status(err.status || 500);
+        response.render('error', {
+            message: err.message,
+            error: {}
+        });
     });
 
     // API routes.
