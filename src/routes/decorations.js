@@ -1,6 +1,4 @@
 const Decoration            = require('../models/decorationSchema');
-const debug                 = require('debug');
-const languages             = require('config').get('API.routes.languages');
 
 module.exports = ((router) => {
 
@@ -36,25 +34,18 @@ module.exports = ((router) => {
     router.route('/decorations/:decoration')
 
         .get((request, response) => {
-            const lang = languages.indexOf(request.header('Accept-Language')) !== -1
-                ? '.' + request.header('Accept-Language')
-                : '' ;
             Decoration.findOne(
                 request.params.decoration,
                 '-_id' +
-                ' abbreviation' + lang +
-                ' title' + lang +
-                ' description' + lang,
+                ' abbreviation' + request.localization +
+                ' title' + request.localization +
+                ' description' + request.localization,
                 (err, decoration) => {
                 if(err){
                     response.status(400).send(err);
                     return false;
                 }
-                response.header(
-                    'Content-Language', lang !== ''
-                        ? request.header('Accept-Language')
-                        : languages
-                );
+                response.header('Content-Language', request.localization_response);
                 response.json(decoration);
                 return true;
             });

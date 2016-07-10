@@ -24,6 +24,7 @@
       }
     },
     "routes": {
+      "languages": ["fi", "en"],
       "allowedMethods": ["GET", "POST", "PUT", "DELETE"],
       "userSchemaValues": ["name", "email", "lastModified", "lastAccess", "created", "access"]
     }
