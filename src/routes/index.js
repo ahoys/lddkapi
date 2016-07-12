@@ -10,14 +10,9 @@ module.exports = ((express) => {
      */
     router.use((request, response, next) => {
         // Setup localization.
-        const request_lang = request.header('Accept-Language');
-        if(languages.indexOf(request_lang) !== -1){
-            request.localization = '.' + request_lang;
-            request.localization_response = request_lang;
-        }else{
-            request.localization = '';
-            request.localization_response = 'missing';
-        }
+        request.localization = languages.indexOf(request.header('Accept-Language')) !== -1
+            ? request.header('Accept-Language')
+            : 'en' ;
         // Begin actual processing.
         next();
     });
