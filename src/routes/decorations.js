@@ -10,8 +10,7 @@ module.exports = ((router) => {
                 'name ' +
                 'localization ' +
                 'abbreviation ' +
-                'title ' +
-                'description',
+                'title ',
                 (err, decorations) => {
                     if(err){ return next(err); }
                     response.header('Content-Language', request.localization);
@@ -25,8 +24,7 @@ module.exports = ((router) => {
                 name: request.body.name,
                 localization: request.body.localization,
                 abbreviation: request.body.abbreviation,
-                title: request.body.title,
-                description: request.body.description
+                title: request.body.title
             });
             console.log(decoration);
             decoration.save((err) => {
@@ -53,8 +51,7 @@ module.exports = ((router) => {
                 'name ' +
                 'localization ' +
                 'abbreviation ' +
-                'title ' +
-                'description',
+                'title ',
                 (err, result) => {
                     if(err){ return next(err); }
                     if(!result){
