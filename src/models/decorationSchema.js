@@ -15,12 +15,16 @@ const DecorationSchema    = new Schema({
     abbreviation: {
         type: String,
         required: true,
-        validation: /^(?=.*[a-zA-Z])[a-zA-Z0-9]{2,16}$/
+        validation: /^(?=.*[a-zA-Z])[a-zA-Z0-9ÄäÖöÅå_-]{2,16}$/
     },
     title: {
         type: String,
         required: true,
         validation: /^[a-zA-Z0-9 äÄöÖåÅ]{2,48}$/
+    },
+    description: {
+        type: String,
+        validation: /^[a-zA-Z0-9äÄöÖåÅ!?–— '"-.,*()]{3,1024}$/
     }
 }, { strict: true });
 

@@ -2,15 +2,25 @@ const mongoose          = require('mongoose');
 const Schema            = mongoose.Schema;
 
 const memberEventSchema = new Schema({
+    id: {
+        type: String,
+        required: true,
+        validation: /^(?=.*[a-zA-Z])[a-zA-Z0-9]{2,16}$/
+    },
+    localization: {
+        type: String,
+        required: true,
+        validation: /^([a-zA-Z-]){2,6}$/
+    },
     title: {
         type: String,
-        validation: [/^[a-zA-Z0-9äÄöÖåÅ!?–— '"-.,*()]{1,48}$/, 'Must have a-z or A-Z, and be between 3-48.'],
-        default: 'Not defined'
+        required: true,
+        validation: /^[a-zA-Z0-9 äÄöÖåÅ_!-]{2,48}$/
     },
     body: {
         type: String,
         default: 'Not defined',
-        validation: [/^[a-zA-Z0-9äÄöÖåÅ!?–— '"-.,*()]{3,1024}$/, 'Invalid characters or the length is not in between 3 and 1024.']
+        validation: /^[a-zA-Z0-9äÄöÖåÅ!?–— '"-.,*()]{3,1024}$/
     },
     date: {
         type: Date,
