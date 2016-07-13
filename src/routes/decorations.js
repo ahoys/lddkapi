@@ -7,7 +7,7 @@ module.exports = ((router) => {
         .get((request, response) => {
             Decoration.find({},
                 '-_id ' +
-                'name ' +
+                'id ' +
                 'localization ' +
                 'abbreviation ' +
                 'title ',
@@ -21,7 +21,7 @@ module.exports = ((router) => {
 
         .post((request, response) => {
             const decoration = new Decoration({
-                name: request.body.name,
+                id: request.body.id,
                 localization: request.body.localization,
                 abbreviation: request.body.abbreviation,
                 title: request.body.title
@@ -42,13 +42,13 @@ module.exports = ((router) => {
             });
         });
 
-    router.route('/decorations/:name')
+    router.route('/decorations/:id')
 
         .get((request, response) => {
             Decoration.findOne(
-                {name: request.params.name, localization: request.localization},
+                {id: request.params.id, localization: request.localization},
                 '-_id ' +
-                'name ' +
+                'id ' +
                 'localization ' +
                 'abbreviation ' +
                 'title ',
@@ -70,7 +70,7 @@ module.exports = ((router) => {
 
         .delete((request, response) => {
             Decoration.remove({
-                name: request.params.name
+                id: request.params.id
             }, (err) => {
                 if(err){ return next(err); }
                 response.json({ message: 'The requested decoration was removed.' });

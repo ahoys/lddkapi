@@ -2,7 +2,7 @@ const mongoose          = require('mongoose');
 const Schema            = mongoose.Schema;
 
 const DecorationSchema    = new Schema({
-    name: {
+    id: {
         type: String,
         required: true,
         validation: /^(?=.*[a-zA-Z])[a-zA-Z0-9]{2,16}$/
