@@ -10,7 +10,8 @@ module.exports = ((router) => {
                 'id ' +
                 'localization ' +
                 'abbreviation ' +
-                'title ',
+                'title ' +
+                'description ',
                 (err, decorations) => {
                     if(err){ return next(err); }
                     response.header('Content-Language', request.localization);
@@ -24,7 +25,8 @@ module.exports = ((router) => {
                 id: request.body.id,
                 localization: request.body.localization,
                 abbreviation: request.body.abbreviation,
-                title: request.body.title
+                title: request.body.title,
+                description: request.body.description
             });
             console.log(decoration);
             decoration.save((err) => {
@@ -51,7 +53,8 @@ module.exports = ((router) => {
                 'id ' +
                 'localization ' +
                 'abbreviation ' +
-                'title ',
+                'title ' +
+                'description ',
                 (err, result) => {
                     if(err){ return next(err); }
                     if(!result){
@@ -65,7 +68,18 @@ module.exports = ((router) => {
         })
 
         .put((request, response) => {
-
+            Decoration.findOne(
+                {id: request.params.id, localization: request.localization},
+                (err, result) => {
+                    if(err){ return next(err); }
+                    if(!result){
+                        response.status(404).json({ message: 'No content found.' });
+                        return false;
+                    }
+                    response.header('Content-Language', request.localization);
+                    response.json(result);
+                    return true;
+                });
         })
 
         .delete((request, response) => {
