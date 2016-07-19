@@ -12,7 +12,8 @@
     "lodash": "^4.13.1",
     "mongoose": "^4.5.1",
     "webpack": "^1.13.1",
-    "debug": "^2.2.0"
+    "debug": "^2.2.0",
+    "bcryptjs": "^2.3.0"
   },
   "scripts": {
     "test": "./node_modules/.bin/mocha --reporter spec"
