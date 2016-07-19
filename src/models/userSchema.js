@@ -1,5 +1,6 @@
 const mongoose      = require('mongoose');
 const Schema        = mongoose.Schema;
+const bcrypt        = require('bcryptjs');
 
 const UserSchema    = new Schema({
     name: {
@@ -48,5 +49,52 @@ const UserSchema    = new Schema({
         select: true
     }
 }, { strict: true });
+
+/**
+ * Hook for handling changes in password.
+ * Is triggered by calls to save().
+ */
+UserSchema.pre('save', (callback) => {
+
+    // Is password modified.
+    if (!this.isModified('password')) return callback();
+
+    // Password has changed.
+    bcrypt.genSalt(5, (err, salt) => {
+
+        // If generating salt fails, callback with an error message.
+        if (err) return callback(err);
+
+        // Hash the generated salt.
+        bcrypt.hash(this.password, salt, null, (err, hash) => {
+
+            // If hashing fails, callback with an error message.
+            if (err) return callback(err);
+
+            // Save the password.
+            this.password = hash;
+            callback();
+        });
+    });
+});
+
+/**
+ * Verifies the given password.
+ * @param password
+ * @param callback
+ * @callback (error, boolean)
+ */
+UserSchema.methods.verifyPassword = (password, callback) => {
+
+    // Compare given password and the one saved into the database.
+    bcrypt.compare(password, this.password, (err, isMatch) => {
+
+        // If comparing fails, always return false as an end result.
+        if (err) return callback(err, false);
+
+        // Result as a boolean.
+        callback(null, isMatch);
+    });
+};
 
 module.exports = mongoose.model('User', UserSchema);
