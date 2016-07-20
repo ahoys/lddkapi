@@ -1,6 +1,9 @@
 const mongoose      = require('mongoose');
 const Schema        = mongoose.Schema;
 
+/**
+ * Stores authorization codes generated in the OAuth2 flow.
+ */
 const CodeSchema    = new Schema({
     value: {
         type: String,

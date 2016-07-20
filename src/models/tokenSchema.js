@@ -1,6 +1,9 @@
 const mongoose      = require('mongoose');
 const Schema        = mongoose.Schema;
 
+/**
+ * Access tokens for clients.
+ */
 const TokenSchema   = new Schema({
     value: {
         type: String,
