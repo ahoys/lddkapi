@@ -1,13 +1,14 @@
-const User      = require('../models/userSchema');
-const config    = require('config').get('API.routes');
-const debug     = require('debug');
-let log         = debug('Routes:Users');
+const User              = require('../models/userSchema');
+const config            = require('config').get('API.routes');
+const debug             = require('debug');
+const authController    = require('../controllers/auth');
+const log               = debug('Routes:Users');
 
 module.exports = ((router) => {
 
     // Resource: users
     router.route('/users')
-        .get((request, response) => {
+        .get(authController.isAuthenticated, (request, response) => {
             // Find all users.
             User.find({}, '-_id name email lastModified lastAccess created access', (err, users) => {
                 if(err || !users){
@@ -22,7 +23,7 @@ module.exports = ((router) => {
             });
         })
 
-        .post((request, response) => {
+        .post(authController.isAuthenticated, (request, response) => {
                 // Construct a new user.
                 const user = new User({
                     name: request.body.name,
@@ -50,7 +51,7 @@ module.exports = ((router) => {
 
     // Resource: users/id
     router.route('/users/:user_name')
-        .get((request, response) => {
+        .get(authController.isAuthenticated, (request, response) => {
                 User.findOne(request.param.user_name, '-_id name email lastModified lastAccess created access', (err, user) => {
                     if(err || !user){
                         response.status(404).send({ message: 'The requested user was not found.' });
@@ -63,7 +64,7 @@ module.exports = ((router) => {
                 });
         })
 
-        .put((request, response) => {
+        .put(authController.isAuthenticated, (request, response) => {
             User.findOne(request.param.name, (err, user) => {
                 if(err){
                     response.status(400).send(err);
@@ -86,7 +87,7 @@ module.exports = ((router) => {
             });
         })
 
-        .delete((request, response) => {
+        .delete(authController.isAuthenticated, (request, response) => {
                 User.remove({
                     _id: request.params.user_id
                 }, (err, user) => {

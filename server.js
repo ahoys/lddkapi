@@ -1,15 +1,19 @@
 // Base setup.
 require('babel-core/register');
-const mongoose      = require('mongoose');
-const bodyParser    = require('body-parser');
-const express       = require('express');
-const config        = require('config').get('API');
-const app           = express();
-const port          = process.env.PORT || config.get('general.port');
+const mongoose          = require('mongoose');
+const bodyParser        = require('body-parser');
+const express           = require('express');
+const config            = require('config').get('API');
+const app               = express();
+const port              = process.env.PORT || config.get('general.port');
+const passport          = require('passport');
 
 // Initialize json parser.
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// Apply passport.
+app.use(passport.initialize());
 
 // Get routes.
 const router        = require('./src/routes/index')(express);
