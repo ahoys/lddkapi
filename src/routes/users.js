@@ -10,7 +10,7 @@ module.exports = ((router) => {
     router.route('/users')
         .get(authController.isAuthenticated, (request, response) => {
             // Find all users.
-            User.find({}, '-_id name email lastModified lastAccess created access', (err, users) => {
+            User.find({}, '-_id name email', (err, users) => {
                 if(err || !users){
                     response.status(404).send({ message: 'The requested users were not found.' });
                     return false;
@@ -28,8 +28,7 @@ module.exports = ((router) => {
                 const user = new User({
                     name: request.body.name,
                     password: request.body.password,
-                    email: request.body.email,
-                    access: request.body.access
+                    email: request.body.email
                 });
                 if (!user) {
                     response.status(500);
@@ -52,7 +51,7 @@ module.exports = ((router) => {
     // Resource: users/id
     router.route('/users/:user_name')
         .get(authController.isAuthenticated, (request, response) => {
-                User.findOne(request.param.user_name, '-_id name email lastModified lastAccess created access', (err, user) => {
+                User.findOne(request.param.user_name, '-_id name email', (err, user) => {
                     if(err || !user){
                         response.status(404).send({ message: 'The requested user was not found.' });
                         return false;
@@ -72,9 +71,7 @@ module.exports = ((router) => {
                 }
                 user.name = request.body.name;
                 user.password = request.body.password;
-                user.access = request.body.access;
                 user.email = request.body.email;
-                user.lastModified = Date.now();
                 user.save((err) => {
                     if(err){
                         response.status(400).send(err);
