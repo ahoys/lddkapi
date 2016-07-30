@@ -1,9 +1,8 @@
-const fs        = require('fs');
-const Console   = require('console').Console;
-const date      = Date.now();
-const output    = fs.createWriteStream('./logs/' + date + '_status.log');
-const errOutput = fs.createWriteStream('./logs/' + date + '_errors.log');
-const writer    = new Console(output, errOutput);
+const fs            = require('fs');
+const dateObj       = new Date();
+const dateStr       = dateObj.getUTCFullYear() + '-' + (dateObj.getUTCMonth() + 1) + '-' + dateObj.getUTCDate();
+const log_status    = fs.createWriteStream('./logs/' + dateStr + '_status.log', {flags: 'a'});
+const log_error     = fs.createWriteStream('./logs/' + dateStr + '_errors.log', {flags: 'a'});
 
 module.exports = {
 
@@ -14,7 +13,7 @@ module.exports = {
      * @param debug {boolean}
      */
     log: (msg, debug) => {
-        writer.log(new Date() + '\n' + msg + '\n');
+        log_status.write(new Date() + '\n' + msg + '\n\n');
         if (debug === true) {
             console.log(msg);
         }
@@ -29,14 +28,17 @@ module.exports = {
      */
     error: (msg, debug, err) => {
         const errMsg = err
-            ? new Date() + '\n' + err + '\n'
-            : new Date() + '\n' + msg + '\n' ;
-        writer.error(errMsg);
+            ? new Date() + '\n' + err + '\n\n'
+            : new Date() + '\n' + msg + '\n\n' ;
+        log_error.write(errMsg);
         if (debug === true) {
             console.error(msg);
         }
         else {
-            console.log('An error occurred, see the logs for more info.');
+            // Errors are important, show the administrator that new errors have occurred.
+            msg = new Date() + '\n' + 'An error occurred, see the logs for more info.';
+            log_status.write(msg);
+            console.log(msg);
         }
     }
 };
