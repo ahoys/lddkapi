@@ -32,7 +32,7 @@ module.exports = ((express) => {
 
     // API routes.
     require('./../routes/users')(router);
-    // require('./client')(router);
+    // require('./clients')(router);
 
     // Regular routes.
     // require('./members')(router);
