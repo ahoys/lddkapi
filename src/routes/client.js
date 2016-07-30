@@ -1,11 +1,12 @@
-const Client = require('../models/clientSchema');
+const Client            = require('../models/clientSchema');
+const authController    = require('../controllers/auth');
 
 module.exports = ((router) => {
 
     router.route('/clients')
 
         // Save a new client
-        .post((request, response) => {
+        .post(authController.isAuthenticated, (request, response) => {
             const client = new Client({
                 name: request.body.name,
                 secret: request.body.secret,
@@ -20,10 +21,10 @@ module.exports = ((router) => {
             });
         });
 
-    router.route('/decorations/:user')
+    router.route('/clients/:user')
 
         // Get all clients of an user.
-        .get((request, response) => {
+        .get(authController.isAuthenticated, (request, response) => {
             Client.find({user: request.params.user},
                 '-_id ' +
                 'name ' +
