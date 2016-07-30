@@ -12,10 +12,9 @@ module.exports = ((router) => {
                 secret: request.body.secret,
                 user: request.user.name
             });
-            console.log(client);
             // TODO: Make sure that the user exists.
             client.save((err) => {
-                if(err){ console.log(err); return next(err); }
+                if(err){ return next(err); }
                 response.json({ message: 'A new client added.' });
                 return true;
             });

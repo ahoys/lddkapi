@@ -1,3 +1,4 @@
+const debug         = require('../../debug');
 const express       = require('express');
 const config_app    = require('config').get('Application');
 
@@ -23,7 +24,7 @@ module.exports = ((express) => {
      * Use "return next(err);" to call.
      */
     router.use((err, request, response, next) => {
-        console.error('Error: [' + err.message + ']');
+        debug.error('Error: [' + err.message + ']', true, err);
         response.status(err.status || 500).send({
             message: 'Something went wrong. Please check your request.'
         });

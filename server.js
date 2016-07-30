@@ -1,5 +1,5 @@
-console.time('>>> The initialization was finished in');
 require('babel-core/register');
+const debug             = require('./debug');
 
 // DATABASE ---------------------------------------------------
 const config_db         = require('config').get('Database');
@@ -7,11 +7,11 @@ const mongoose          = require('mongoose');
 
 // Create a database connection.
 mongoose.connect(config_db.get('url'), config_db.get('port'));
-mongoose.connection.on('error', console.error.bind(console, 'Error: [Database connection failed.]'));
+mongoose.connection.on('error', debug.error.bind(debug, 'Error: [Database connection failed.]'));
 
 // Verify the database connection.
 if(mongoose.connection.readyState !== 1 && mongoose.connection.readyState !== 2){
-    console.error('Error: [Mongoose connection failed with a code: ' + mongoose.connection.readyState + ']');
+    debug.error('Error: [Mongoose connection failed with a code: ' + mongoose.connection.readyState + ']');
     process.exit();
 }
 
@@ -36,12 +36,12 @@ app.use('/api', router);
 
 // Start the server.
 app.listen(port);
-console.log(
+debug.log(
     '>>> ' +
     config_app.get('title') +
     ', created by ' +
     config_app.get('author') +
     ', is now listening on port ' +
-    port
+    port,
+    true
 );
-console.timeEnd('>>> The initialization was finished in');

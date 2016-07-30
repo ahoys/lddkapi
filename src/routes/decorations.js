@@ -28,9 +28,8 @@ module.exports = ((router) => {
                 title: request.body.title,
                 description: request.body.description
             });
-            console.log(decoration);
             decoration.save((err) => {
-                if(err){ console.log(err); return next(err); }
+                if(err){ return next(err); }
                 response.json({ message: 'A new decoration added.' });
                 return true;
             });
