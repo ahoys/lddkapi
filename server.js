@@ -1,3 +1,4 @@
+console.time('>>> The initialization was finished in');
 require('babel-core/register');
 
 // DATABASE ---------------------------------------------------
@@ -40,7 +41,7 @@ console.log(
     config_app.get('title') +
     ' created by ' +
     config_app.get('author') +
-    ' is now listening port ' +
-    port +
-    ' >>>'
+    ' is now listening on port ' +
+    port
 );
+console.timeEnd('>>> The initialization was finished in');
