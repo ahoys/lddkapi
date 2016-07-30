@@ -1,5 +1,5 @@
-const express               = require('express');
-const languages             = require('config').get('API.routes.languages');
+const express       = require('express');
+const config_app    = require('config').get('Application');
 
 module.exports = ((express) => {
 
@@ -10,7 +10,7 @@ module.exports = ((express) => {
      */
     router.use((request, response, next) => {
         // Setup localization.
-        request.localization = languages.indexOf(request.header('Accept-Language')) !== -1
+        request.localization = config_app.get('router.localization').indexOf(request.header('Accept-Language')) !== -1
             ? request.header('Accept-Language')
             : 'en' ;
         // Begin actual processing.
@@ -23,8 +23,7 @@ module.exports = ((express) => {
      * Use "return next(err);" to call.
      */
     router.use((err, request, response, next) => {
-        response.status(err.status || 500);
-        response.render('error', {
+        response.status(err.status || 500).send({
             message: err.message,
             error: {}
         });
