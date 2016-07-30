@@ -39,9 +39,9 @@ app.listen(port);
 console.log(
     '>>> ' +
     config_app.get('title') +
-    ' created by ' +
+    ', created by ' +
     config_app.get('author') +
-    ' is now listening on port ' +
+    ', is now listening on port ' +
     port
 );
 console.timeEnd('>>> The initialization was finished in');
