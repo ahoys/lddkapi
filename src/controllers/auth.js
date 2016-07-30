@@ -10,7 +10,7 @@ const Client            = require('../models/clientSchema');
 passport.use(new BasicStrategy((username, password, callback) => {
 
     // Look for the requested user.
-    User.findOne({ name: username }, (err, user) => {
+    User.findOne({ name: username }, '-_id password', (err, user) => {
 
         // If search fails, callback with an error.
         if (err) { return callback(err); }
