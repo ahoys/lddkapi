@@ -15,7 +15,7 @@ module.exports = {
      */
     log: (msg, debug) => {
         writer.log(new Date() + '\n' + msg + '\n');
-        if (debug) {
+        if (debug === true) {
             console.log(msg);
         }
     },
@@ -32,8 +32,11 @@ module.exports = {
             ? new Date() + '\n' + err + '\n'
             : new Date() + '\n' + msg + '\n' ;
         writer.error(errMsg);
-        if (debug) {
+        if (debug === true) {
             console.error(msg);
+        }
+        else {
+            console.log('An error occurred, see the logs for more info.');
         }
     }
 };
