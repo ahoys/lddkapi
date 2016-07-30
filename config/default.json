@@ -1,36 +1,15 @@
 {
-  "API": {
-    "general": {
-      "title": "LDD Kyllikki API",
-      "port": 8080,
-      "author": "Ari Höysniemi"
-    },
-    "database": {
-      "url": "mongodb://127.0.0.1/LDDK_API_DB",
-      "port": 27017,
-      "options": {
-        "user:": "",
-        "password": "",
-        "replset": {
-          "socketOptions": {
-            "autoReconnect": true,
-            "noDelay": true,
-            "connectTimeoutMS": 15000,
-            "socketTimeoutMS": 15000
-          },
-          "reconnectTries": 100,
-          "reconnectInterval": 5000
-        }
-      }
-    },
-    "routes": {
-      "languages": ["fi", "en"],
-      "allowedMethods": ["GET", "POST", "PUT", "DELETE"],
-      "userSchemaValues": ["name", "email", "lastModified", "lastAccess", "created", "access"]
+  "Application": {
+    "title": "LDD Kyllikki API",
+    "port": 8080,
+    "author": "Ari Höysniemi",
+    "router": {
+      "localization": ["fi", "en"]
     }
   },
-  "DEBUG": {
-    "state": true
+  "Database": {
+    "url": "mongodb://127.0.0.1/LDDK_API_DB",
+    "port": 27017
   },
   "UNIT_TESTS": {
     "url": "mongodb://127.0.0.1:27017/LDDK_API_DB",

@@ -24,11 +24,8 @@ passport.use(new BasicStrategy((username, password, callback) => {
             // Verifying failed.
             if (err) { return callback(err); }
 
-            // Password does not match, return false.
-            if (!isMatch) { return callback(null, false); }
-
-            // Everything OK, return the user.
-            return callback(null, user);
+            // If the password matches and everything went OK, return the user.
+            return isMatch ? callback(null, user) : callback(null, false) ;
         });
     });
 }));
