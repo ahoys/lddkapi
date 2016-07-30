@@ -1,7 +1,7 @@
 const User              = require('../models/userSchema');
 const config            = require('config').get('API.routes');
 const debug             = require('debug');
-const authController    = require('../controllers/auth');
+const authController    = require('./auth');
 const log               = debug('Routes:Users');
 
 module.exports = ((router) => {
