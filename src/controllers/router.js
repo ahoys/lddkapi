@@ -6,26 +6,26 @@ module.exports = ((express) => {
     const router = express.Router();
 
     /**
-     * The main middleware for requests.
+     * Localization middleware.
+     * The supported languages are defined in the configs.
+     * If the request does not specify localization or is not supported, default localization is used instead.
      */
     router.use((request, response, next) => {
-        // Setup localization.
         request.localization = config_app.get('router.localization').indexOf(request.header('Accept-Language')) !== -1
             ? request.header('Accept-Language')
             : 'en' ;
-        // Begin actual processing.
         next();
     });
 
     /**
      * Production error handler.
-     * No stack traces given.
+     * No stack traces returned to the user.
      * Use "return next(err);" to call.
      */
     router.use((err, request, response, next) => {
+        console.log('Error: [' + err.message + ']');
         response.status(err.status || 500).send({
-            message: err.message,
-            error: {}
+            message: 'Something went wrong. Please check your request.'
         });
     });
 
