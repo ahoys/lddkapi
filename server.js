@@ -6,11 +6,11 @@ const mongoose          = require('mongoose');
 
 // Create a database connection.
 mongoose.connect(config_db.get('url'), config_db.get('port'));
-mongoose.connection.on('error', console.error.bind(console, 'MongoDB connection failed.'));
+mongoose.connection.on('error', console.error.bind(console, 'Error: [Database connection failed.]'));
 
 // Verify the database connection.
 if(mongoose.connection.readyState !== 1 && mongoose.connection.readyState !== 2){
-    console.log('Mongoose connection failed! Code: ' + mongoose.connection.readyState);
+    console.error('Error: [Mongoose connection failed with a code: ' + mongoose.connection.readyState + ']');
     process.exit();
 }
 

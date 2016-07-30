@@ -23,7 +23,7 @@ module.exports = ((express) => {
      * Use "return next(err);" to call.
      */
     router.use((err, request, response, next) => {
-        console.log('Error: [' + err.message + ']');
+        console.error('Error: [' + err.message + ']');
         response.status(err.status || 500).send({
             message: 'Something went wrong. Please check your request.'
         });
