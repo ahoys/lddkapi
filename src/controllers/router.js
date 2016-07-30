@@ -31,15 +31,15 @@ module.exports = ((express) => {
     });
 
     // API routes.
-    require('./users')(router);
-    require('./client')(router);
+    require('./../routes/users')(router);
+    // require('./client')(router);
 
     // Regular routes.
-    require('./members')(router);
+    // require('./members')(router);
     // require('./ranks')(router);
-    require('./decorations')(router);
+    // require('./decorations')(router);
     // require('./ribbons')(router);
-    require('./trainings')(router);
+    // require('./trainings')(router);
     // require('./histories')(router);
     // require('./news')(router);
 

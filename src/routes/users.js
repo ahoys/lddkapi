@@ -1,7 +1,7 @@
 const User              = require('../models/userSchema');
 const config            = require('config').get('API.routes');
 const debug             = require('debug');
-const authController    = require('../utilities/auth');
+const authController    = require('../controllers/auth');
 const log               = debug('Routes:Users');
 
 module.exports = ((router) => {
@@ -23,7 +23,7 @@ module.exports = ((router) => {
             });
         })
 
-        .post(authController.isAuthenticated, (request, response) => {
+        .post((request, response) => {
                 // Construct a new user.
                 const user = new User({
                     name: request.body.name,

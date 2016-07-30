@@ -19,10 +19,17 @@ passport.use(new BasicStrategy((username, password, callback) => {
         if (!user) { return callback(null, false); }
 
         // Verify the given password against the user in the database.
-        if (user.verifyPassword(password)) { return callback(null, false); }
+        user.verifyPassword(password, (err, isMatch) => {
 
-        // Everything OK, return the user.
-        return callback(null, user);
+            // Verifying failed.
+            if (err) { return callback(err); }
+
+            // Password does not match, return false.
+            if (!isMatch) { return callback(null, false); }
+
+            // Everything OK, return the user.
+            return callback(null, user);
+        });
     });
 }));
 

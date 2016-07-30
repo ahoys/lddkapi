@@ -35,8 +35,14 @@ const UserSchema    = new Schema({
  */
 UserSchema.pre('save', (callback) => {
 
+    // The user.
+    const user = this;
+
+    // User not found.
+    if (user === undefined) return callback();
+
     // Is password modified.
-    if (!this.isModified('password')) return callback();
+    if (!user.isModified('password')) return callback();
 
     // Password has changed.
     bcrypt.genSalt(5, (err, salt) => {
@@ -45,13 +51,13 @@ UserSchema.pre('save', (callback) => {
         if (err) return callback(err);
 
         // Hash the generated salt.
-        bcrypt.hash(this.password, salt, null, (err, hash) => {
+        bcrypt.hash(user.password, salt, null, (err, hash) => {
 
             // If hashing fails, callback with an error message.
             if (err) return callback(err);
 
             // Save the password.
-            this.password = hash;
+            user.password = hash;
             callback();
         });
     });
@@ -65,8 +71,14 @@ UserSchema.pre('save', (callback) => {
  */
 UserSchema.methods.verifyPassword = (password, callback) => {
 
+    // The user.
+    const user = this;
+
+    // User not found.
+    if (user === undefined) return callback(null, false);
+
     // Compare given password and the one saved into the database.
-    bcrypt.compare(password, this.password, (err, isMatch) => {
+    bcrypt.compare(password, user.password, (err, isMatch) => {
 
         // If comparing fails, always return false as an end result.
         if (err) return callback(err, false);

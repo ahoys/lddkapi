@@ -16,7 +16,7 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 
 // Get routes.
-const router        = require('./src/routes/index')(express);
+const router        = require('./src/controllers/router')(express);
 
 // Initialize and connect the database.
 mongoose.connect(config.get('database.url'), config.get('database.port'), config.get('database.options'));

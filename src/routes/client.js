@@ -1,5 +1,5 @@
 const Client            = require('../models/clientSchema');
-const authController    = require('../utilities/auth');
+const authController    = require('../controllers/auth');
 
 module.exports = ((router) => {
 
