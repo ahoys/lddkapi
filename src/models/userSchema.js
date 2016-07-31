@@ -67,8 +67,6 @@ UserSchema.methods.verifyPassword = function(password, callback) {
     // Compare the given password and the one saved into the database.
     bcrypt.compare(password, this.password, function(err, isMatch) {
 
-        console.log('is: ', isMatch);
-
         // If comparing fails, always return false as an end result.
         if (err) return callback(err, false);
 

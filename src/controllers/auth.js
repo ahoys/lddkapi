@@ -25,7 +25,7 @@ passport.use(new BasicStrategy((username, password, callback) => {
             if (err) { return callback(err); }
 
             // If the password matches and everything went OK, return the user.
-            return isMatch ? callback(null, user) : callback(null, false) ;
+            return isMatch ? callback(null, true) : callback(null, false) ;
         });
     });
 }));
