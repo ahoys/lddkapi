@@ -24,18 +24,6 @@ module.exports = ((router) => {
                 })
         })
 
-        .get(authController.isAuthenticated, (req, res) => {
-            User.find({}, '-_id username email', (err, result) => {
-                if (err) {
-                    debug.error(err);
-                    res.sendStatus(400);
-                }
-                else {
-                    res.json(result);
-                }
-            });
-        })
-
         .post((req, res) => {
             // The requested user.
             const user = new User({
