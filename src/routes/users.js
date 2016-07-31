@@ -52,43 +52,46 @@ module.exports = ((router) => {
         })
 
         .put(authController.isAuthenticated, (req, res) => {
-            User.findOne({ username: req.params.username }, (err, result) => {
-                if (err) {
+            User.findOne({ username: req.params.username })
+                .then((user) => {
+                    if (!user) {
+                        // User not found.
+                        res.sendStatus(404);
+                    }
+                    else if (String(user._id) !== String(req.user._id)) {
+                        // User not authorized.
+                        res.sendStatus(401);
+                    }
+                    else {
+                        // Update user.
+                        user.username = req.body.username ? req.body.username : req.user.username ;
+                        user.password = req.body.password ? req.body.password : req.user.password ;
+                        user.email = req.body.email ? req.body.email : req.user.email ;
+                        user.save();
+                        res.json({ message: 'The user has been updated.' });
+                    }
+                })
+                .catch((err) => {
                     debug.error(err);
                     res.sendStatus(400);
-                }
-                else if (String(result._id) !== String(req.user._id)) {
-                    res.sendStatus(401);
-                }
-                else {
-                    result.username = req.body.username ? req.body.username : req.user.username ;
-                    result.password = req.body.password ? req.body.password : req.user.password ;
-                    result.email = req.body.email ? req.body.email : req.user.email ;
-                    result.save((err) => {
-                        if (err) {
-                            debug.error(err);
-                            res.sendStatus(400);
-                        }
-                        else {
-                            res.json({ message: 'The user has been updated.' });
-                        }
-                    });
-                }
-            });
+                });
         })
 
         .delete(authController.isAuthenticated, (req, res) => {
             User.findOne({ username: req.params.username })
                 .then((user) => {
                     if (!user) {
+                        // User not found.
                         res.sendStatus(404);
                     }
-                    else if (String(user._id) === String(req.user._id)) {
-                        user.remove();
-                        res.json({ message: 'The user was removed.' });
+                    else if (String(user._id) !== String(req.user._id)) {
+                        // User not authorized.
+                        res.sendStatus(401);
                     }
                     else {
-                        res.sendStatus(401);
+                        // Remove user.
+                        user.remove();
+                        res.json({ message: 'The user was removed.' });
                     }
                 })
                 .catch((err) => {
