@@ -1,7 +1,5 @@
 const User              = require('../models/userSchema');
-const debug             = require('debug');
 const authController    = require('../controllers/auth');
-const log               = debug('Routes:Users');
 
 module.exports = ((router) => {
 
@@ -15,7 +13,6 @@ module.exports = ((router) => {
                     return false;
                 }else{
                     // Users found.
-                    log('GET successful.');
                     response.json(users);
                     return true;
                 }
@@ -40,7 +37,6 @@ module.exports = ((router) => {
                         return false;
                     }else{
                         // User saved.
-                        log('POST successful.');
                         response.json({ message: 'New user added.' });
                         return true;
                     }
@@ -55,7 +51,6 @@ module.exports = ((router) => {
                         response.status(404).send({ message: 'The requested user was not found.' });
                         return false;
                     }else{
-                        log('GET single user successful.');
                         response.json(user);
                         return true;
                     }
@@ -76,7 +71,6 @@ module.exports = ((router) => {
                         response.status(400).send(err);
                         return false;
                     }
-                    log('PUT ', user.name, ' successful.');
                     response.json({ message: 'The requested user was modified.' });
                     return true;
                 });
@@ -91,7 +85,6 @@ module.exports = ((router) => {
                         response.status(404).send({ message: 'The requested user was not found.' });
                         return false;
                     }else{
-                        log('DELETE successful.');
                         response.json({ message: 'User removed.' });
                         return true;
                     }
