@@ -12,8 +12,7 @@ const UserSchema    = new Schema({
     },
     password: {
         type: String,
-        required: true,
-        validate: [/^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])[a-zA-Z0-9!#¤%&()=?\-_^@$€.,*]{6,64}$/, 'Password must be between 6-256 characters in length and contain numbers and lower- and uppercase letters.']
+        required: true
     },
     email: {
         type: String,
