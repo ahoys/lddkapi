@@ -39,7 +39,7 @@ module.exports = ((router) => {
 
     // Resource: users/id
     router.route('/users/:username')
-        .get((req, res) => {
+        .get(authController.isAuthenticated, (req, res) => {
             User.findOne(req.param.username, '-_id username email', (err, result) => {
                 if (err) {
                     debug.error(err);
