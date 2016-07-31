@@ -21,26 +21,19 @@ module.exports = ((router) => {
                 .catch((err) => {
                     debug.error(err);
                     res.sendStatus(400);
-                })
+                });
         })
 
         .post((req, res) => {
-            // The requested user.
-            const user = new User({
-                username: req.body.username,
-                password: req.body.password,
-                email: req.body.email
-            });
-            user.save((err) => {
-                // Inform the client about the end result.
-                if (err) {
+            new User({ username: req.body.username, password: req.body.password, email: req.body.email })
+                .save(() => {
+                    // A new user saved.
+                    res.json({ message: 'A new user saved.'} );
+                })
+                .catch((err) => {
                     debug.error(err);
                     res.sendStatus(400);
-                }
-                else {
-                    res.json({ message: 'A new user saved.'} );
-                }
-            });
+                });
         });
 
     // Resource: users/id
@@ -49,11 +42,11 @@ module.exports = ((router) => {
             User.findOne({ username: req.params.username }, '-_id username email')
                 .then((user) => {
                     if (!user) {
-                        // User not found.
+                        // A user not found.
                         res.sendStatus(404);
                     }
                     else {
-                        // Return user.
+                        // Return a user.
                         res.json(user);
                     }
                 })
@@ -67,11 +60,11 @@ module.exports = ((router) => {
             User.findOne({ username: req.params.username })
                 .then((user) => {
                     if (!user) {
-                        // User not found.
+                        // A user not found.
                         res.sendStatus(404);
                     }
                     else if (String(user._id) !== String(req.user._id)) {
-                        // User not authorized.
+                        // A user not authorized.
                         res.sendStatus(401);
                     }
                     else {
@@ -93,15 +86,15 @@ module.exports = ((router) => {
             User.findOne({ username: req.params.username })
                 .then((user) => {
                     if (!user) {
-                        // User not found.
+                        // A user not found.
                         res.sendStatus(404);
                     }
                     else if (String(user._id) !== String(req.user._id)) {
-                        // User not authorized.
+                        // A user not authorized.
                         res.sendStatus(401);
                     }
                     else {
-                        // Remove user.
+                        // Remove a user.
                         user.remove();
                         res.json({ message: 'The user was removed.' });
                     }
