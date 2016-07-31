@@ -4,8 +4,8 @@ const authController    = require('../controllers/auth');
 
 module.exports = ((router) => {
 
-    // Resource: users
     router.route('/users')
+
         .get(authController.isAuthenticated, (req, res) => {
             User.find({}, '-_id username email')
                 .then((users) => {
@@ -36,8 +36,8 @@ module.exports = ((router) => {
                 });
         });
 
-    // Resource: users/id
     router.route('/users/:username')
+
         .get(authController.isAuthenticated, (req, res) => {
             User.findOne({ username: req.params.username }, '-_id username email')
                 .then((user) => {
