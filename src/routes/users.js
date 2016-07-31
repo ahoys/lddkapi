@@ -51,24 +51,27 @@ module.exports = ((router) => {
             });
         })
 
-        .put(authController.isAuthenticated, (request, response) => {
-            User.findOne(request.param.name, (err, user) => {
-                if(err){
-                    response.status(400).send(err);
-                    return false;
+        .put(authController.isAuthenticated, (req, res) => {
+            User.findOne(req.param.username, (err, result) => {
+                if (err) {
+                    debug.error(err);
+                    res.sendStatus(400);
                 }
-                user.name = request.body.name;
-                user.password = request.body.password;
-                user.email = request.body.email;
-                user.save((err) => {
-                    if(err){
-                        response.status(400).send(err);
-                        return false;
-                    }
-                    response.json({ message: 'The requested user was modified.' });
-                    return true;
-                });
-            });
+                else {
+                    result.username = req.body.username ? req.body.username : result.username;
+                    result.password = req.body.password ? req.body.password : result.password;
+                    result.email = req.body.email ? req.body.email : result.email;
+                    result.save((err) => {
+                        if (err) {
+                            debug.error(err);
+                            res.sendStatus(400);
+                        }
+                        else {
+                            res.json({ message: 'The user has been updated.' });
+                        }
+                    });
+                }
+            })
         })
 
         .delete(authController.isAuthenticated, (request, response) => {
