@@ -6,8 +6,8 @@ module.exports = ((router) => {
 
     // Resource: users
     router.route('/users')
-        .get((req, res) => {
-            User.find((err, result) => {
+        .get(authController.isAuthenticated, (req, res) => {
+            User.find({}, '-_id username email', (err, result) => {
                 if (err) {
                     debug.error(err);
                     res.sendStatus(400);
