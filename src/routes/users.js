@@ -58,7 +58,6 @@ module.exports = ((router) => {
                     res.sendStatus(400);
                 }
                 else if (String(result._id) !== String(req.user._id)) {
-                    console.log(result._id + ' vs ' + req.user._id);
                     res.sendStatus(401);
                 }
                 else {
@@ -78,17 +77,27 @@ module.exports = ((router) => {
             });
         })
 
-        .delete(authController.isAuthenticated, (request, response) => {
-                User.remove({
-                    _id: request.params.user_id
-                }, (err, user) => {
-                    if(err || !user){
-                        response.status(404).send({ message: 'The requested user was not found.' });
-                        return false;
-                    }else{
-                        response.json({ message: 'User removed.' });
-                        return true;
-                    }
-                });
+        .delete(authController.isAuthenticated, (req, res) => {
+            User.findOne({ username: req.params.username }, (err, result) => {
+                if (err) {
+                    debug.error(err);
+                    res.sendStatus(400);
+                }
+                else if (String(result._id) !== String(req.user._id)){
+                    res.sendStatus(401);
+                }
+                else {
+                    result.remove((err) => {
+                        if (err) {
+                            debug.error(err);
+                            res.sendStatus(400);
+                        }
+                        else {
+                            res.json({ message: 'The user was remvoed.' });
+                        }
+                    });
+
+                }
+            });
         });
 });
