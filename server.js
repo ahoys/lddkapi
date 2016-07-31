@@ -13,6 +13,7 @@ const port              = process.env.PORT || config_app.get('port');
 const router            = require('./src/controllers/router')(express);
 
 // Db: create a new database connection.
+mongoose.Promise = global.Promise;
 mongoose.connect(config_db.get('url'), config_db.get('port'));
 mongoose.connection.on('error', debug.error.bind(debug, 'Error: [Database connection failed.]'));
 
