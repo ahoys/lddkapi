@@ -2,14 +2,12 @@
   "Application": {
     "title": "LDD Kyllikki API",
     "port": 8080,
-    "author": "Ari Höysniemi",
-    "router": {
-      "localization": ["fi", "en"]
-    }
+    "author": "Ari Höysniemi"
   },
   "Database": {
     "url": "mongodb://127.0.0.1/LDDK_API_DB",
-    "port": 27017
+    "port": 27017,
+    "localization": ["fi", "en"]
   },
   "UNIT_TESTS": {
     "url": "mongodb://127.0.0.1:27017/LDDK_API_DB",

@@ -1,6 +1,5 @@
 const debug         = require('../../debug');
-const express       = require('express');
-const config_app    = require('config').get('Application');
+const config_db     = require('config').get('Database');
 
 module.exports = ((express) => {
 
@@ -12,7 +11,7 @@ module.exports = ((express) => {
      * If the request does not specify localization or is not supported, default localization is used instead.
      */
     router.use((request, response, next) => {
-        request.localization = config_app.get('router.localization').indexOf(request.header('Accept-Language')) !== -1
+        request.localization = config_db.get('localization').indexOf(request.header('Accept-Language')) !== -1
             ? request.header('Accept-Language')
             : 'en' ;
         next();
