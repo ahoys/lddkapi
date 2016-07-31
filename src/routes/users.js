@@ -38,9 +38,9 @@ module.exports = ((router) => {
         });
 
     // Resource: users/id
-    router.route('/users/:name')
+    router.route('/users/:username')
         .get(authController.isAuthenticated, (req, res) => {
-            User.find({ username: req.params.name }, '-_id username email', (err, result) => {
+            User.findOne({ username: req.params.username }, '-_id username email', (err, result) => {
                 if (err) {
                     debug.error(err);
                     res.sendStatus(400);
@@ -52,26 +52,22 @@ module.exports = ((router) => {
         })
 
         .put(authController.isAuthenticated, (req, res) => {
-            User.findOne(req.param.username, (err, result) => {
+            if (req.user.username !== req.params.username) { res.sendStatus(401); return false }
+            User.update({
+                username: req.params.username
+            }, {
+                username: req.body.username ? req.body.username : req.user.username ,
+                password: req.body.password ? req.body.password : req.user.password ,
+                email: req.body.email ? req.body.email : req.user.email ,
+            }, (err, num, raw) => {
                 if (err) {
                     debug.error(err);
                     res.sendStatus(400);
                 }
                 else {
-                    result.username = req.body.username ? req.body.username : result.username;
-                    result.password = req.body.password ? req.body.password : result.password;
-                    result.email = req.body.email ? req.body.email : result.email;
-                    result.save((err) => {
-                        if (err) {
-                            debug.error(err);
-                            res.sendStatus(400);
-                        }
-                        else {
-                            res.json({ message: 'The user has been updated.' });
-                        }
-                    });
+                    res.json({ message: 'The user was updated.' })
                 }
-            })
+            });
         })
 
         .delete(authController.isAuthenticated, (request, response) => {

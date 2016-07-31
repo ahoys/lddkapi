@@ -10,7 +10,7 @@ const Client            = require('../models/clientSchema');
 passport.use(new BasicStrategy((username, password, callback) => {
 
     // Look for the requested user.
-    User.findOne({ username: username }, '-_id password', (err, user) => {
+    User.findOne({ username: username }, (err, user) => {
 
         // If search fails, callback with an error.
         if (err) { return callback(err); }
@@ -25,7 +25,7 @@ passport.use(new BasicStrategy((username, password, callback) => {
             if (err) { return callback(err); }
 
             // If the password matches and everything went OK, return the user.
-            return isMatch ? callback(null, true) : callback(null, false) ;
+            return isMatch ? callback(null, user) : callback(null, false) ;
         });
     });
 }));
