@@ -10,7 +10,7 @@ const Client            = require('../models/clientSchema');
 passport.use(new BasicStrategy((username, password, callback) => {
 
     // Look for the requested user.
-    User.findOne({ name: username }, '-_id password', (err, user) => {
+    User.findOne({ username: username }, '-_id password', (err, user) => {
 
         // If search fails, callback with an error.
         if (err) { return callback(err); }
@@ -36,10 +36,10 @@ exports.isAuthenticated = passport.authenticate('basic', { session: false });
  * Passport middleware.
  * Manages authentication for the client
  */
-passport.use('client-basic', new BasicStrategy((name, password, callback) => {
+passport.use('client-basic', new BasicStrategy((username, password, callback) => {
 
     // Look for the requested user.
-    Client.findOne({ name: name }, (err, client) => {
+    Client.findOne({ username: username }, (err, client) => {
 
         // If search fails, callback with an error.
         if (err) { return callback(err); }
