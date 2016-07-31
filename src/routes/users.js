@@ -19,28 +19,23 @@ module.exports = ((router) => {
             });
         })
 
-        .post((request, response) => {
-                // Construct a new user.
-                const user = new User({
-                    name: request.body.name,
-                    password: request.body.password,
-                    email: request.body.email
-                });
-                if (!user) {
-                    response.status(500);
-                    return false;
+        .post((req, res) => {
+            // The requested user.
+            const user = new User({
+                username: req.body.username,
+                password: req.body.password,
+                email: req.body.email
+            });
+            user.save((err) => {
+                // Inform the client about the end result.
+                if (err) {
+                    console.log(err);
+                    res.sendStatus(400);
                 }
-                // Save the user.
-                user.save((err) => {
-                    if(err){
-                        response.status(400).send(err);
-                        return false;
-                    }else{
-                        // User saved.
-                        response.json({ message: 'New user added.' });
-                        return true;
-                    }
-                });
+                else {
+                    res.json({ message: 'A new user saved.'} );
+                }
+            });
         });
 
     // Resource: users/id

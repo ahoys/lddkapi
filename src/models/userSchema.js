@@ -3,7 +3,7 @@ const Schema        = mongoose.Schema;
 const bcrypt        = require('bcryptjs');
 
 const UserSchema    = new Schema({
-    name: {
+    username: {
         type: String,
         required: true,
         lowercase: true,
@@ -44,7 +44,7 @@ UserSchema.pre('save', function(callback) {
         if (err) return callback(err);
 
         // Hash the generated salt.
-        bcrypt.hash(user.password, salt, null, function(err, hash) {
+        bcrypt.hash(user.password, salt, function(err, hash) {
 
             // If hashing fails, callback with an error message.
             if (err) return callback(err);
