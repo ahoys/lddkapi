@@ -52,20 +52,28 @@ module.exports = ((router) => {
         })
 
         .put(authController.isAuthenticated, (req, res) => {
-            if (req.user.username !== req.params.username) { res.sendStatus(401); return false }
-            User.update({
-                username: req.params.username
-            }, {
-                username: req.body.username ? req.body.username : req.user.username ,
-                password: req.body.password ? req.body.password : req.user.password ,
-                email: req.body.email ? req.body.email : req.user.email ,
-            }, (err, num, raw) => {
+            User.findOne({ username: req.params.username }, (err, result) => {
                 if (err) {
                     debug.error(err);
                     res.sendStatus(400);
                 }
+                else if (String(result._id) !== String(req.user._id)) {
+                    console.log(result._id + ' vs ' + req.user._id);
+                    res.sendStatus(401);
+                }
                 else {
-                    res.json({ message: 'The user was updated.' })
+                    result.username = req.body.username ? req.body.username : req.user.username ;
+                    result.password = req.body.password ? req.body.password : req.user.password ;
+                    result.email = req.body.email ? req.body.email : req.user.email ;
+                    result.save((err) => {
+                        if (err) {
+                            debug.error(err);
+                            res.sendStatus(400);
+                        }
+                        else {
+                            res.json({ message: 'The user has been updated.' });
+                        }
+                    });
                 }
             });
         })
