@@ -79,13 +79,18 @@ module.exports = ((router) => {
 
         .delete(authController.isAuthenticated, (req, res) => {
             User.findOne({ username: req.params.username })
-            .then((user) => {
-                user.remove();
-                res.json({ message: 'The user was removed.' });
-            })
-            .catch((err) => {
-                debug.error(err);
-                res.sendStatus(400);
-            });
+                .then((user) => {
+                    if (String(user._id) === String(req.user._id)) {
+                        user.remove();
+                        res.json({ message: 'The user was removed.' });
+                    }
+                    else {
+                        res.sendStatus(401);
+                    }
+                })
+                .catch((err) => {
+                    debug.error(err);
+                    res.sendStatus(400);
+                });
         });
 });
