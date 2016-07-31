@@ -38,17 +38,17 @@ module.exports = ((router) => {
         });
 
     // Resource: users/id
-    router.route('/users/:user_name')
-        .get(authController.isAuthenticated, (request, response) => {
-                User.findOne(request.param.user_name, '-_id name email', (err, user) => {
-                    if(err || !user){
-                        response.status(404).send({ message: 'The requested user was not found.' });
-                        return false;
-                    }else{
-                        response.json(user);
-                        return true;
-                    }
-                });
+    router.route('/users/:username')
+        .get((req, res) => {
+            User.findOne(req.param.username, '-_id username email', (err, result) => {
+                if (err) {
+                    debug.error(err);
+                    res.sendStatus(400);
+                }
+                else {
+                    res.json(result);
+                }
+            });
         })
 
         .put(authController.isAuthenticated, (request, response) => {
