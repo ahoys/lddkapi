@@ -36,9 +36,8 @@ module.exports = {
         }
         else {
             // Errors are important, show the administrator that new errors have occurred.
-            msg = new Date() + '\n' + 'An error occurred, see the logs for more info.';
-            log_status.write(msg);
-            console.log(msg);
+            log_status.write(new Date() + '\n' + 'An error occurred, see the logs for more info.');
+            console.log('An error occurred, see the logs for more info.');
         }
     }
 };
