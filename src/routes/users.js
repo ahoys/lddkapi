@@ -1,3 +1,4 @@
+const debug             = require('../../debug');
 const User              = require('../models/userSchema');
 const authController    = require('../controllers/auth');
 
@@ -5,16 +6,14 @@ module.exports = ((router) => {
 
     // Resource: users
     router.route('/users')
-        .get(authController.isAuthenticated, (request, response) => {
-            // Find all users.
-            User.find({}, '-_id name email', (err, users) => {
-                if(err || !users){
-                    response.status(404).send({ message: 'The requested users were not found.' });
-                    return false;
-                }else{
-                    // Users found.
-                    response.json(users);
-                    return true;
+        .get((req, res) => {
+            User.find((err, result) => {
+                if (err) {
+                    debug.error(err);
+                    res.sendStatus(400);
+                }
+                else {
+                    res.json(result);
                 }
             });
         })
@@ -29,7 +28,7 @@ module.exports = ((router) => {
             user.save((err) => {
                 // Inform the client about the end result.
                 if (err) {
-                    console.log(err);
+                    debug.error(err);
                     res.sendStatus(400);
                 }
                 else {
