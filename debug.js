@@ -1,43 +1,34 @@
 const fs            = require('fs');
 const dateObj       = new Date();
 const dateStr       = dateObj.getUTCFullYear() + '-' + (dateObj.getUTCMonth() + 1) + '-' + dateObj.getUTCDate();
-const log_status    = fs.createWriteStream('./logs/' + dateStr + '_status.log', {flags: 'a'});
-const log_error     = fs.createWriteStream('./logs/' + dateStr + '_errors.log', {flags: 'a'});
+const file          = fs.createWriteStream('./logs/' + dateStr + '_debug.log', {flags: 'a'});
 
-module.exports = {
+module.exports = (tag = '') => {
 
-    /**
-     * Logs events.
-     * You can additionally show the message in the console with debug = true.
-     * @param msg {string}
-     * @param debug {boolean}
-     */
-    log: (msg, debug) => {
-        log_status.write(new Date() + '\n' + msg + '\n\n');
-        if (debug === true) {
-            console.log(msg);
-        }
-    },
+    const module = {};
+    tag = String('\n[' + tag + ']\n');
 
     /**
-     * Logs errors.
-     * You can additionally show the message in the console with debug = true.
-     * @param msg
-     * @param debug
+     * Logs down manually triggered logging events.
+     * @param str
+     * @param log
      * @param err
+     * @returns {boolean}
      */
-    error: (msg, debug, err) => {
-        const errMsg = err
-            ? new Date() + '\n' + err + '\n\n'
-            : new Date() + '\n' + msg + '\n\n' ;
-        log_error.write(errMsg);
-        if (debug === true) {
-            console.error(msg);
+    module.debug = (str = '', log = false, err = undefined) => {
+        str = String(str);
+        log = Boolean(log);
+        if (str.length > 0) {
+            const errMsg = err !== undefined ? '\n: ' + String(err) : '' ;
+            console.log(tag + ': ' + str + errMsg);
+            if (log === true) {
+                file.write(new Date() + tag + ': ' + str + errMsg + '\n\n');
+            }
+            return true;
         }
-        else {
-            // Errors are important, show the administrator that new errors have occurred.
-            log_status.write(new Date() + '\n' + 'An error occurred, see the logs for more info.');
-            console.log('An error occurred, see the logs for more info.');
-        }
-    }
+        return false;
+    };
+
+    return module;
+
 };

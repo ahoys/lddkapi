@@ -1,4 +1,4 @@
-const debug             = require('../../debug');
+const log               = require('../../debug')('routes:users').debug;
 const User              = require('../models/userSchema');
 const authController    = require('../controllers/auth');
 
@@ -19,7 +19,7 @@ module.exports = ((router) => {
                     }
                 })
                 .catch((err) => {
-                    debug.error(err);
+                    log('/users GET failed.', true, err);
                     res.sendStatus(400);
                 });
         })
@@ -31,7 +31,7 @@ module.exports = ((router) => {
                     res.json({ message: 'A new user saved.'} );
                 })
                 .catch((err) => {
-                    debug.error(err);
+                    log('/users POST failed.', true, err);
                     res.sendStatus(400);
                 });
         });
@@ -51,7 +51,7 @@ module.exports = ((router) => {
                     }
                 })
                 .catch((err) => {
-                    debug.error(err);
+                    log('/user GET failed.', true, err);
                     res.sendStatus(400);
                 });
         })
@@ -77,7 +77,7 @@ module.exports = ((router) => {
                     }
                 })
                 .catch((err) => {
-                    debug.error(err);
+                    log('/user PUT failed.', true, err);
                     res.sendStatus(400);
                 });
         })
@@ -100,7 +100,7 @@ module.exports = ((router) => {
                     }
                 })
                 .catch((err) => {
-                    debug.error(err);
+                    log('/user DELETE failed.', true, err);
                     res.sendStatus(400);
                 });
         });
