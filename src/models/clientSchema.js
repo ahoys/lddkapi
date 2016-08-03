@@ -17,11 +17,9 @@ const ClientSchema  = new Schema({
         required: true
     },
     // Owner of the application client.
-    user: {
+    username: {
         type: String,
-        required: true,
-        lowercase: true,
-        validate: [/^([a-zA-Z]){3,24}$/, 'Name can only contain letters.']
+        required: true
     }
 }, { strict: true });
 
