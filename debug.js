@@ -19,7 +19,12 @@ module.exports = (tag = '') => {
         str = String(str);
         log = Boolean(log);
         if (str.length > 0) {
-            const errMsg = err !== undefined ? '\n: ' + String(err) : '' ;
+            const errLine = err !== undefined
+                ? '\n: ' + err.stack.split('\n')[4].replace(/\s+/g, ' ').substr(1, 512)
+                : '' ;
+            const errMsg = err !== undefined
+                ? errLine + '\n: ' + String(err)
+                : '' ;
             console.log(tag + ': ' + str + errMsg);
             if (log === true) {
                 file.write(new Date() + tag + ': ' + str + errMsg + '\n\n');
