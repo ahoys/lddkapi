@@ -17,7 +17,7 @@ const ClientSchema  = new Schema({
         required: true
     },
     // Owner of the application client.
-    username: {
+    owner: {
         type: String,
         required: true
     }
