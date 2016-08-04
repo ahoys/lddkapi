@@ -20,10 +20,10 @@ module.exports = (tag = '') => {
         log = Boolean(log);
         if (str.length > 0) {
             const errLine = err !== undefined
-                ? '\n: ' + err.stack.split('\n')[4].replace(/\s+/g, ' ').substr(1, 512)
+                ? err.stack.split('\n')[4].replace(/\s+/g, ' ').substr(1, 512)
                 : '' ;
             const errMsg = err !== undefined
-                ? errLine + '\n: ' + String(err)
+                ? '\n: ' + String(err) + '\n: ' + errLine
                 : '' ;
             console.log(tag + ': ' + str + errMsg);
             if (log === true) {
