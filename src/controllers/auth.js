@@ -41,14 +41,14 @@ exports.isAuthenticated = passport.authenticate('basic', { session: false });
  */
 passport.use('client-basic', new BasicStrategy((name, password, callback) => {
 
-    Client.findOne({ name: name })
+    Client.findOne({ owner: name })
         .then((client) => {
-            if (!client || client.secret !== password) {
-                log('Invalid logon with ' + client);
-                return callback(null, false);
+            if (client && client.secret === password) {
+                return callback(null, client);
             }
             else {
-                return callback(null, client);
+                log('Invalid client logon.');
+                return callback(null, false);
             }
         })
         .catch((err) => {
