@@ -28,7 +28,7 @@ module.exports = ((router) => {
             new User({ username: req.body.username, password: req.body.password, email: req.body.email })
                 .save(() => {
                     // A new user saved.
-                    res.json({ message: 'A new user saved.'} );
+                    res.json({ message: 'A new user saved.' });
                 })
                 .catch((err) => {
                     log('/users POST failed.', true, err);
