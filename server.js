@@ -11,6 +11,8 @@ const passport          = require('passport');
 const app               = express();
 const port              = process.env.PORT || config_app.get('port');
 const router            = require('./src/controllers/router')(express);
+const ejs               = require('ejs');
+const session           = require('express-session');
 
 // Db: create a new database connection.
 mongoose.Promise = global.Promise;
@@ -36,3 +38,11 @@ app.use('/api', router);
 // App: start the server.
 app.listen(port);
 log(config_app.get('title') + ' v.' + config_app.get('version') + ' is now listening on port ' + port + '.');
+
+// App: start the view engine.
+app.set('view engine', 'ejs');
+app.use(session({
+    secret: 'wip session key',
+    saveUninitialized: true,
+    resave: true
+}));

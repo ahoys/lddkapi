@@ -36,7 +36,7 @@ passport.use(new BasicStrategy((username, password, callback) => {
         });
 }));
 
-exports.isAuthenticated = passport.authenticate('basic', { session: false });
+exports.isAuthenticated = passport.authenticate(['basic', 'bearer'], { session: false });
 
 /**
  * isClientAuthenticated

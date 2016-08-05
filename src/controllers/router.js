@@ -30,8 +30,10 @@ module.exports = ((express) => {
     });
 
     // API routes.
-    require('./../routes/users')(router);
-    require('./../routes/clients')(router);
+    require('../routes/users')(router);
+    require('../routes/clients')(router);
+    require('../routes/authorize')(router);
+    require('../routes/token')(router);
 
     // Regular routes.
     // require('./members')(router);
