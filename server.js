@@ -35,4 +35,4 @@ app.use('/api', router);
 
 // App: start the server.
 app.listen(port);
-log(config_app.get('title') + ' v.' + config_app.get('version') + ' on ' + port + ' running.');
+log(config_app.get('title') + ' v.' + config_app.get('version') + ' is now listening on port ' + port + '.');
