@@ -1,11 +1,13 @@
 const log               = require('../../debug')('controllers:auth').debug;
 const passport          = require('passport');
 const BasicStrategy     = require('passport-http').BasicStrategy;
+const BearerStrategy    = require('passport-http-bearer').Strategy;
 const User              = require('../models/userSchema');
 const Client            = require('../models/clientSchema');
+const Token             = require('../models/tokenSchema');
 
 /**
- * Passport middleware.
+ * isAuthenticated
  * Manages authentication for users.
  */
 passport.use(new BasicStrategy((username, password, callback) => {
@@ -18,6 +20,7 @@ passport.use(new BasicStrategy((username, password, callback) => {
                         log('Verifying the password failed.', true, err);
                     }
                     else {
+                        log('User (' + username + ') was found. Access granted: ' + isMatch);
                         return isMatch ? callback(null, user) : callback(null, false) ;
                     }
                 });
@@ -28,7 +31,7 @@ passport.use(new BasicStrategy((username, password, callback) => {
             }
         })
         .catch((err) => {
-            log('User authenticating failed.', true, err);
+            log('User authentication failed.', true, err);
             return callback(null, false);
         });
 }));
@@ -36,7 +39,7 @@ passport.use(new BasicStrategy((username, password, callback) => {
 exports.isAuthenticated = passport.authenticate('basic', { session: false });
 
 /**
- * Passport middleware.
+ * isClientAuthenticated
  * Manages authentication for clients.
  */
 passport.use('client-basic', new BasicStrategy((name, password, callback) => {
@@ -44,6 +47,7 @@ passport.use('client-basic', new BasicStrategy((name, password, callback) => {
     Client.findOne({ owner: name })
         .then((client) => {
             if (client && client.secret === password) {
+                log('Client (' + name + ') was successfully authenticated.');
                 return callback(null, client);
             }
             else {
@@ -52,9 +56,47 @@ passport.use('client-basic', new BasicStrategy((name, password, callback) => {
             }
         })
         .catch((err) => {
-            log('Client authenticating failed.', true, err);
+            log('Client authentication failed.', true, err);
             return callback(null, false);
         });
 }));
 
 exports.isClientAuthenticated = passport.authenticate('client-basic', { session: false });
+
+/**
+ * isBearerAuthenticated
+ * Accepts requests from application clients using OAuth tokens and authenticates them.
+ */
+passport.use(new BearerStrategy((accessToken, callback) => {
+
+    Token.findOne({ value: accessToken })
+        .then((token) => {
+            if (token) {
+                User.findOne({ _id: token.userId })
+                    .then((user) => {
+                        if (user) {
+                            log('Token of (' + user.username + ') was successfully authenticated.');
+                            callback(null, user, { scope: '*' });
+                        }
+                        else {
+                            log('User registered for the token could not be found.');
+                            return callback(null, false);
+                        }
+                    })
+                    .catch((err) => {
+                        log('Token authentication\'s user fetch failed.', true, err);
+                        return callback(null, false);
+                    });
+            }
+            else {
+                log('Token could not be found.');
+                return callback(null, false);
+            }
+        })
+        .catch((err) => {
+            log('Token authentication failed.', true, err);
+            return callback(null, false);
+        });
+}));
+
+exports.isBearerAuthenticated = passport.authenticate('bearer', { session: false });
