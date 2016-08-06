@@ -7,7 +7,7 @@ module.exports = ((router) => {
     router.route('/clients')
 
         .get(authController.isAuthenticated, (req, res) => {
-            Client.find({ userId: req.user._id })
+            Client.find({ userId: req.user._id }, '-_id name')
                 .then((clients) => {
                     if (!clients) {
                         // Clients not found.
