@@ -8,11 +8,11 @@ const mongoose          = require('mongoose');
 const express           = require('express');
 const bodyParser        = require('body-parser');
 const passport          = require('passport');
+const session           = require('express-session');
 const app               = express();
 const port              = process.env.PORT || config_app.get('port');
 const router            = require('./src/controllers/router')(express);
 const ejs               = require('ejs');
-const session           = require('express-session');
 
 // Db: create a new database connection.
 mongoose.Promise = global.Promise;
@@ -32,13 +32,6 @@ app.use(bodyParser.json());
 // App: apply passport.
 app.use(passport.initialize());
 
-// App: register the router.
-app.use('/api', router);
-
-// App: start the server.
-app.listen(port);
-log(config_app.get('title') + ' v.' + config_app.get('version') + ' is now listening on port ' + port + '.');
-
 // App: start the view engine.
 app.set('view engine', 'ejs');
 app.use(session({
@@ -46,3 +39,10 @@ app.use(session({
     saveUninitialized: true,
     resave: true
 }));
+
+// App: register the router.
+app.use('/api', router);
+
+// App: start the server.
+app.listen(port);
+log(config_app.get('title') + ' v.' + config_app.get('version') + ' is now listening on port ' + port + '.');

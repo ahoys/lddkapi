@@ -42,12 +42,12 @@ exports.isAuthenticated = passport.authenticate(['basic', 'bearer'], { session: 
  * isClientAuthenticated
  * Manages authentication for clients.
  */
-passport.use('client-basic', new BasicStrategy((name, password, callback) => {
+passport.use('client-basic', new BasicStrategy((username, password, callback) => {
 
-    Client.findOne({ owner: name })
+    Client.findOne({ id: username })
         .then((client) => {
             if (client && client.secret === password) {
-                log('Client (' + name + ') was successfully authenticated.');
+                log('Client (' + username + ') was successfully authenticated.');
                 return callback(null, client);
             }
             else {

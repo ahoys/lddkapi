@@ -11,13 +11,17 @@ const ClientSchema  = new Schema({
         unique: true,
         required: true
     },
+    id: {
+        type: String,
+        required: true
+    },
     // Part of OAuth2 flow.
     secret: {
         type: String,
         required: true
     },
     // Owner of the application client.
-    owner: {
+    userId: {
         type: String,
         required: true
     }

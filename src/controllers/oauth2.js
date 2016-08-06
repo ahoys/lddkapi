@@ -8,7 +8,7 @@ const Code          = require('../models/codeSchema');
 const server        = oauth2orize.createServer();
 
 server.serializeClient((client, callback) => {
-    log('SerializeClient triggered for ' + client + '.');
+    log('SerializeClient triggered for ' + client.name + '.');
     return callback(null, client._id);
 });
 
@@ -25,8 +25,9 @@ server.deserializeClient((id, callback) => {
 });
 
 server.grant(oauth2orize.grant.code((client, redirectUri, user, ares, callback) => {
-    new Code({ value: uuid(16), clientId: client._id, redirectUri: redirectUri, userId: user._id })
-        .save((code) => {
+    new Code({ value: uuid(), clientId: client._id, redirectUri: redirectUri, userId: user._id })
+        .save()
+        .then((code) => {
             log('Server grant succeeded.');
             callback(null, code.value);
         })
@@ -54,8 +55,9 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectUri, callback) 
             else {
                 authCode.remove()
                     .then(() => {
-                        new Token({ value: uuid(256), clientId: authCode.clientId, userId: authCode.userId })
-                            .save((token) => {
+                        new Token({ value: uuid(), clientId: authCode.clientId, userId: authCode.userId })
+                            .save()
+                            .then((token) => {
                                 log('Server saving of a new access token succeeded.');
                                 callback(null, token);
                             })

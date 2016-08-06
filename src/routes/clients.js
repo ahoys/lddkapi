@@ -7,7 +7,7 @@ module.exports = ((router) => {
     router.route('/clients')
 
         .get(authController.isAuthenticated, (req, res) => {
-            Client.find({ owner: req.user.username }, '-_id name owner')
+            Client.find({ userId: req.user._id })
                 .then((clients) => {
                     if (!clients) {
                         // Clients not found.
@@ -25,7 +25,7 @@ module.exports = ((router) => {
         })
 
         .post(authController.isAuthenticated, (req, res) => {
-            new Client({ name: req.body.name, secret: req.body.secret, owner: req.user.username })
+            new Client({ name: req.body.name, secret: req.body.secret, id: req.body.id, userId: req.user._id })
                 .save(() => {
                     // A new client saved.
                     res.json({ message: 'A new client saved.' });
@@ -41,7 +41,7 @@ module.exports = ((router) => {
                         // A client not found.
                         res.sendStatus(404);
                     }
-                    else if (String(client.owner) !== String(req.user.username)) {
+                    else if (String(client.userId) !== String(req.user._id)) {
                         // A user not authorized.
                         res.sendStatus(401);
                     }
