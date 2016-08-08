@@ -1,7 +1,6 @@
 const log           = require('../../debug')('controllers:oauth2').debug;
 const uuid          = require('uuid').v4;
 const oauth2orize   = require('oauth2orize');
-const User          = require('../models/userSchema');
 const Client        = require('../models/clientSchema');
 const Token         = require('../models/tokenSchema');
 const Code          = require('../models/codeSchema');
