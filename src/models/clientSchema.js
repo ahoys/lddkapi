@@ -11,6 +11,7 @@ const ClientSchema  = new Schema({
         unique: true,
         required: true
     },
+    // Username.
     id: {
         type: String,
         required: true
@@ -28,6 +29,3 @@ const ClientSchema  = new Schema({
 }, { strict: true });
 
 module.exports = mongoose.model('Client', ClientSchema);
-
-// TODO: Hash the secret, perhaps even the id?
-// TODO: Auto-generate secret and the userId.
