@@ -30,6 +30,10 @@ module.exports = ((router) => {
                     // A new client saved.
                     res.json({ message: 'A new client saved.' });
                 })
+                .catch((err) => {
+                    log('/clients POST failed.', true, err);
+                    res.sendStatus(400);
+                })
         });
 
     router.route('/clients/:name')
