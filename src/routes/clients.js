@@ -33,7 +33,7 @@ module.exports = ((router) => {
                 .catch((err) => {
                     log('/clients POST failed.', true, err);
                     res.sendStatus(400);
-                })
+                });
         });
 
     router.route('/clients/:name')
