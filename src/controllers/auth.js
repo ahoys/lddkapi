@@ -14,7 +14,7 @@ passport.use(new BasicStrategy((username, password, callback) => {
 
     User.findOne({ username: username })
         .then((user) => {
-            if (user) {
+            if (user !== undefined) {
                 user.verifyPassword(password, (err, isMatch) => {
                     if (err) {
                         log('Verifying the password failed.', true, err);
@@ -46,7 +46,7 @@ passport.use('client-basic', new BasicStrategy((username, password, callback) =>
 
     Client.findOne({ id: username })
         .then((client) => {
-            if (client && client.secret === password) {
+            if (client !== undefined && client.secret === password) {
                 log('Client (' + username + ') was successfully authenticated.');
                 return callback(null, client);
             }
@@ -74,7 +74,7 @@ passport.use(new BearerStrategy((accessToken, callback) => {
             if (token) {
                 User.findOne({ _id: token.userId })
                     .then((user) => {
-                        if (user) {
+                        if (user !== undefined) {
                             log('Token of (' + user.username + ') was successfully authenticated.');
                             callback(null, user, { scope: '*' });
                         }
