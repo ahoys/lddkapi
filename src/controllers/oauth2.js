@@ -14,7 +14,7 @@ server.serializeClient((client, callback) => {
 server.deserializeClient((id, callback) => {
     Client.findOne({ _id: id })
         .then((client) => {
-            log('Server deserializeClient succeeded for ' + id + '.');
+            log('Server deserializeClient succeeded.');
             return callback(null, client);
         })
         .catch((err) => {
@@ -85,6 +85,7 @@ server.exchange(oauth2orize.exchange.code((client, code, redirectUri, callback) 
  */
 exports.authorization = [
     server.authorization((clientId, redirectUri, callback) => {
+        log('Client attempting authorization: ' + clientId);
         Client.findOne({ id: clientId })
             .then((client) => {
                 log('');

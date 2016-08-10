@@ -5,6 +5,7 @@ const BearerStrategy    = require('passport-http-bearer').Strategy;
 const User              = require('../models/userSchema');
 const Client            = require('../models/clientSchema');
 const Token             = require('../models/tokenSchema');
+const bcrypt            = require('bcryptjs');
 
 /**
  * isAuthenticated
@@ -50,7 +51,7 @@ passport.use('client-basic', new BasicStrategy((id, secret, callback) => {
     Client.findOne({ id: id })
         .then((client) => {
             if (client !== undefined) {
-                client.verifyCredentials(id, secret, (err, isMatch) => {
+                client.verifySecret(secret, (err, isMatch) => {
                     if (err) {
                         log('Verifying the client failed', true, err);
                         callback(null, false);
