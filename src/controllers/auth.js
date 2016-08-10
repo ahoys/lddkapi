@@ -18,10 +18,13 @@ passport.use(new BasicStrategy((username, password, callback) => {
                 user.verifyPassword(password, (err, isMatch) => {
                     if (err) {
                         log('Verifying the password failed.', true, err);
+                        callback(null, false);
                     }
                     else {
                         log('User (' + username + ') was found. Access granted: ' + isMatch);
-                        return isMatch ? callback(null, user) : callback(null, false) ;
+                        return isMatch
+                            ? callback(null, user)
+                            : callback(null, false) ;
                     }
                 });
             }
@@ -42,17 +45,23 @@ exports.isAuthenticated = passport.authenticate(['basic', 'bearer'], { session: 
  * isClientAuthenticated
  * Manages authentication for clients.
  */
-passport.use('client-basic', new BasicStrategy((username, password, callback) => {
+passport.use('client-basic', new BasicStrategy((id, secret, callback) => {
 
-    Client.findOne({ id: username })
+    Client.findOne({ id: id })
         .then((client) => {
-            if (client !== undefined && client.secret === password) {
-                log('Client (' + username + ') was successfully authenticated.');
-                return callback(null, client);
-            }
-            else {
-                log('Invalid client logon.');
-                return callback(null, false);
+            if (client !== undefined) {
+                client.verifyCredentials(id, secret, (err, isMatch) => {
+                    if (err) {
+                        log('Verifying the client failed', true, err);
+                        callback(null, false);
+                    }
+                    else {
+                        log('Client (' + id + ') was found. Access granted: ' + isMatch);
+                        return isMatch
+                            ? callback(null, client)
+                            : callback(null, false) ;
+                    }
+                });
             }
         })
         .catch((err) => {

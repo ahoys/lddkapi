@@ -4,7 +4,9 @@ const Schema        = mongoose.Schema;
 const bcrypt        = require('bcryptjs');
 
 /**
- * Clients like services and such.
+ * Clients are external applications and services that
+ * require user granted access to function.
+ * Clients have identical permissions as their related users.
  */
 const ClientSchema  = new Schema({
     // For easier identification.
@@ -31,86 +33,203 @@ const ClientSchema  = new Schema({
 }, { strict: true });
 
 /**
- * Hook for handling changes in id or secret.
- * Is triggered by calls to save().
+ * Middleware for detecting changes in client id and/or secret.
+ * New ids and secrets are hashed automatically.
+ * Returns callback() if successful, else callback(error message).
  */
-ClientSchema.pre('save', (callback) => {
+ClientSchema.pre('save', function(callback) {
 
-    // The client.
+    // Catch the modifications.
     const client = this;
+    const idModified = client.isModified('id');
+    const secretModified = client.isModified('secret');
+    const nameModified = client.isModified('name');
+    const userIdModified = client.isModified('userId');
 
-    // Is the id or secret modified.
-    if (!client.isModified('id') || !client.isModified('secret')) return callback(true);
+    // Callback if no changes detected.
+    if (!idModified && !secretModified && !nameModified && !userIdModified) {
+        callback();
+    }
 
-    bcrypt.genSalt(5)
-        .catch((err) => {
-            log('Handling client save failed 1/4', true, err);
-            callback(false);
-        })
-        .then((salt) => {
-            // Hash the id.
-            return bcrypt.hash(client.id, salt)
-                .catch((err) => {
-                    log('Handling client save failed 2/4', true, err);
-                    callback(false);
-                });
-        })
-        .then((id) => {
-            client.id = id;
-            return bcrypt.genSalt(5)
-                .catch((err) => {
-                    log('Handling client save failed 3/4', true, err);
-                    callback(false);
-                });
-        })
-        .then((salt) => {
-            // Hash the secret.
-            return bcrypt.hash(client.secret, salt)
-                .catch((err) => {
-                    log('Handling client save failed 4/4', true, err);
-                    callback(false);
-                });
-        })
-        .then((secret) => {
-            client.secret = secret;
-            callback(true);
+    // Promise hashed id.
+    const promiseId = new Promise((resolve, reject) => {
+        if (idModified) {
+            bcrypt.genSalt(5, (err, salt) => {
+                if (err) {
+                    log('Salting id failed.', true, err);
+                    reject(err);
+                }
+                else {
+                    bcrypt.hash(client.id, salt, (err, hash) => {
+                        if (err) {
+                            log('Hashing id failed.', true, err);
+                            reject(err)
+                        }
+                        else {
+                            resolve(hash)
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            resolve(false);
+        }
+    });
+
+    // Promise hashed secret.
+    const promiseSecret = new Promise((resolve, reject) => {
+        if (secretModified) {
+            bcrypt.genSalt(5, (err, salt) => {
+                if (err) {
+                    log('Salting secret failed.', true, err);
+                    reject(err);
+                }
+                else {
+                    bcrypt.hash(client.secret, salt, (err, hash) => {
+                        if (err) {
+                            log('Hashing secret failed.', true, err);
+                            reject(err)
+                        }
+                        else {
+                            resolve(hash)
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            resolve(false);
+        }
+    });
+
+    // Promise hashed name.
+    const promiseName = new Promise((resolve, reject) => {
+        if (nameModified) {
+            bcrypt.genSalt(5, (err, salt) => {
+                if (err) {
+                    log('Salting secret failed.', true, err);
+                    reject(err);
+                }
+                else {
+                    bcrypt.hash(client.name, salt, (err, hash) => {
+                        if (err) {
+                            log('Hashing secret failed.', true, err);
+                            reject(err)
+                        }
+                        else {
+                            resolve(hash)
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            resolve(false);
+        }
+    });
+
+    // Promise hashed userId.
+    const promiseUserId = new Promise((resolve, reject) => {
+        if (userIdModified) {
+            bcrypt.genSalt(5, (err, salt) => {
+                if (err) {
+                    log('Salting secret failed.', true, err);
+                    reject(err);
+                }
+                else {
+                    bcrypt.hash(client.userId, salt, (err, hash) => {
+                        if (err) {
+                            log('Hashing secret failed.', true, err);
+                            reject(err)
+                        }
+                        else {
+                            resolve(hash)
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            resolve(false);
+        }
+    });
+
+    // Save credentials.
+    Promise.all([promiseId, promiseSecret, promiseName, promiseUserId])
+        .then(hashes => {
+            client.id = hashes[0] !== false
+                ? hashes[0]
+                : client.id ;
+            client.secret = hashes[1] !== false
+                ? hashes[1]
+                : client.secret;
+            client.name = hashes[2] !== false
+                ? hashes[2]
+                : client.name ;
+            client.userId = hashes[3] !== false
+                ? hashes[3]
+                : client.userId;
+            callback();
+        },
+        reason => {
+            log('Securing the client failed.', true, reason);
+            callback(reason);
         });
 });
 
 /**
- * Verifies the client.
+ * Verifies the client id and secret.
  * @param id
  * @param secret
  * @param callback
  */
-ClientSchema.methods.verifySecret = (id, secret, callback) => {
+ClientSchema.methods.verifyCredentials = function(id, secret, callback) {
 
-    // Compare identifications.
-    bcrypt.compare(id, this.id)
-        .then((isMatch) => {
-            if (isMatch !== undefined && isMatch === true) {
-                // Compare secrets.
-                bcrypt.compare(secret, this.secret)
-                    .then((isMatch) => {
-                        if (isMatch !== undefined && isMatch === true) {
-                            return callback(null, isMatch);
-                        }
-                        else {
-                            return callback(null, false);
-                        }
-                    })
-                    .catch((err) => {
-                        log('Verifying secret failed.', true, err);
-                        return callback(null, false);
-                    });
+    // Make sure all the required variables are available.
+    if (id === undefined || secret === undefined) {
+        const err = 'Missing arguments';
+        log('Verifying the client failed.', true, err);
+        callback(err, false);
+    }
+
+    // Promise id comparision.
+    const promiseIdVerify = new Promise((resolve, reject) => {
+       bcrypt.compare(id, this.id, (err, isMatch) => {
+           if (err) {
+               reject(err);
+           }
+           else {
+               resolve(isMatch);
+           }
+       });
+    });
+
+    // Promise secret comparision.
+    const promiseSecretVerify = new Promise((resolve, reject) => {
+        bcrypt.compare(secret, this.secret, (err, isMatch) => {
+            if (err) {
+                reject(err);
             }
             else {
-                return callback(null, false);
+                resolve(isMatch);
             }
-        })
-        .catch((err) => {
-            log('Verifying secret failed.', true, err);
-            return callback(null, false);
+        });
+    });
+
+    // Return the access.
+    Promise.all([promiseIdVerify, promiseSecretVerify])
+        .then(matches => {
+            if (matches[0] && matches[1]){
+                callback(null, true);
+            }
+            else {
+                callback(null, false);
+            }
+        },
+        reason => {
+            log('Verifying the client failed.', true, reason);
+            callback(reason, false);
         });
 };
 
