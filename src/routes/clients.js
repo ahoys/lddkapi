@@ -1,6 +1,7 @@
 const log               = require('../../debug')('routes:clients').debug;
 const Client            = require('../models/clientSchema');
 const authController    = require('../controllers/auth');
+const md5               = require('md5');
 
 module.exports = ((router) => {
 
@@ -25,14 +26,27 @@ module.exports = ((router) => {
         })
 
         .post(authController.isAuthenticated, (req, res) => {
-            new Client({ name: req.body.name, secret: req.body.secret, id: req.body.id, userId: req.user._id })
-                .save(() => {
-                    // A new client saved.
-                    res.json({ message: 'A new client saved.' });
-                })
+
+            if (!req || !req.body || !req.body.secret || !req.body.id) {
+                log('/clients POST failed.', true, 'Missing required parameters.');
+                res.sendStatus(400);
+            }
+
+            // Generate md5 hashes of the provided parameters.
+            const secret = md5(req.body.secret + 'secret' + Date.now());
+            const id = md5(req.body.id + 'secret' + Date.now());
+
+            new Client({ name: req.body.name, secret: secret, id: id, userId: req.user._id })
+                .save()
                 .catch((err) => {
                     log('/clients POST failed.', true, err);
                     res.sendStatus(400);
+                }, () => {
+                    res.json({
+                        message: 'A new client saved. Please store your secret and id in a safe place.',
+                        secret: secret,
+                        id: id
+                    });
                 });
         });
 

@@ -13,6 +13,7 @@ const app               = express();
 const port              = process.env.PORT || config_app.get('port');
 const router            = require('./src/controllers/router')(express);
 const ejs               = require('ejs');
+const md5               = require('md5');
 
 // Db: create a new database connection.
 mongoose.Promise = global.Promise;
@@ -35,7 +36,7 @@ app.use(passport.initialize());
 // App: start the view engine.
 app.set('view engine', 'ejs');
 app.use(session({
-    secret: 'wip session key',
+    secret: md5('cef4d8dc12ba8a0438a6a039666a3295' + Date.now()),
     saveUninitialized: true,
     resave: true
 }));
