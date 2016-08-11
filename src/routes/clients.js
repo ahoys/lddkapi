@@ -1,6 +1,7 @@
 const log               = require('../../debug')('routes:clients').debug;
 const Client            = require('../models/clientSchema');
 const authController    = require('../controllers/auth');
+const uuid              = require('uuid').v4;
 const md5               = require('md5');
 
 module.exports = ((router) => {
@@ -28,14 +29,14 @@ module.exports = ((router) => {
         .post(authController.isAuthenticated, (req, res) => {
 
             // Make sure the required parameters are available.
-            if (!req || !req.body || !req.body.secret || !req.body.id) {
+            if (!req || !req.body || !req.body.name) {
                 log('/clients POST failed.', true, 'Missing required parameters.');
                 res.sendStatus(400);
             }
 
             // Generate md5 hashes of the provided parameters.
-            const secret = md5(req.body.secret + 'secret' + Date.now());
-            const id = md5(req.body.id + 'secret' + Date.now());
+            const secret = md5(uuid());
+            const id = uuid();
 
             // Save the a new client.
             new Client({ name: req.body.name, secret: secret, id: id, userId: req.user._id })
