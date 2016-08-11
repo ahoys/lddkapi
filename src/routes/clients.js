@@ -28,28 +28,23 @@ module.exports = ((router) => {
 
         .post(authController.isAuthenticated, (req, res) => {
 
-            // Make sure the required parameters are available.
-            if (!req || !req.body || !req.body.name) {
-                log('/clients POST failed.', true, 'Missing required parameters.');
-                res.sendStatus(400);
-            }
-
             // Generate md5 hashes of the provided parameters.
-            const secret = md5(uuid());
             const id = uuid();
+            const secret = md5(uuid());
 
             // Save the a new client.
             new Client({ name: req.body.name, secret: secret, id: id, userId: req.user._id })
                 .save()
-                .catch((err) => {
-                    log('/clients POST failed.', true, err);
-                    res.sendStatus(400);
-                }, () => {
+                .then(() => {
                     res.json({
                         message: 'A new client saved. Please store your secret and id in a safe place.',
                         secret: secret,
                         id: id
                     });
+                })
+                .catch((err) => {
+                    log('/clients POST failed.', true, err);
+                    res.sendStatus(400);
                 });
         });
 
