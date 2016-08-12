@@ -38,36 +38,40 @@ ClientSchema.pre('save', function(callback) {
 
     const client = this;
     const idModified = client.isModified('id');
-    const secretModified = client.isModified('secret');
     const userIdModified = client.isModified('userId');
+    const secretModified = client.isModified('secret');
 
-    if (idModified || secretModified || userIdModified) {
+    if (idModified || userIdModified || secretModified) {
         client.id = idModified
             ? md5(client.id)
             : client.id ;
         client.userId = userIdModified
             ? md5(client.userId)
             : client.userId ;
-        bcrypt.genSalt(5, (err, salt) => {
-            if (err) {
-                log('Salting the secret failed.', true, err);
-                callback(err);
-            }
-            else {
-                bcrypt.hash(client.secret, salt, (err, hash) => {
-                    if (err) {
-                        log('Hashing the secret failed.', true, err);
-                        callback(err)
-                    }
-                    else {
-                        client.secret = hash;
-                    }
-                });
-            }
-        });
+        if(secretModified){
+            bcrypt.genSalt(5, (err, salt) => {
+                if (err) {
+                    log('Salting the secret failed.', true, err);
+                    callback(err);
+                }
+                else {
+                    bcrypt.hash(client.secret, salt, (err, hash) => {
+                        if (err) {
+                            log('Hashing the secret failed.', true, err);
+                            callback(err)
+                        }
+                        else {
+                            client.secret = hash;
+                            callback();
+                        }
+                    });
+                }
+            });
+        }
+        else {
+            callback();
+        }
     }
-
-    callback();
 });
 
 /**
