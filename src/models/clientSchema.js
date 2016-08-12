@@ -71,10 +71,9 @@ ClientSchema.pre('save', function(callback) {
 });
 
 /**
- * Middleware for converting client ids to comparable md5.
- * The secret won't be converted.
+ * Middleware findOne for converting client id and userId to comparable md5.
  */
-ClientSchema.pre('findOne', function (callback) {
+ClientSchema.pre('findOne', function(callback) {
 
     if (this && this._conditions) {
         if (this._conditions.id !== undefined) {
@@ -87,6 +86,23 @@ ClientSchema.pre('findOne', function (callback) {
     }
     else {
         log('Client middleware for findOne failed.', true, 'Missing parameters.');
+        callback('Missing parameters.');
+    }
+});
+
+/**
+ * Middleware find for converting userId to searchable md5.
+ */
+ClientSchema.pre('find', function(callback) {
+
+    if (this && this._conditions) {
+        if (this._conditions.userId !== undefined) {
+            this._conditions.userId = md5(this._conditions.userId);
+        }
+        callback();
+    }
+    else {
+        log('Client middleware for find failed.', true, 'Missing parameters.');
         callback('Missing parameters.');
     }
 });
