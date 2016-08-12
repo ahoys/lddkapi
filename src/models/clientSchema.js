@@ -38,16 +38,12 @@ ClientSchema.pre('save', function(callback) {
 
     const client = this;
     const idModified = client.isModified('id');
-    const userIdModified = client.isModified('userId');
     const secretModified = client.isModified('secret');
 
-    if (idModified || userIdModified || secretModified) {
+    if (idModified || secretModified) {
         client.id = idModified
             ? md5(client.id)
             : client.id ;
-        client.userId = userIdModified
-            ? md5(client.userId)
-            : client.userId ;
         if(secretModified){
             bcrypt.genSalt(5, (err, salt) => {
                 if (err) {
@@ -83,30 +79,10 @@ ClientSchema.pre('findOne', function(callback) {
         if (this._conditions.id !== undefined) {
             this._conditions.id = md5(this._conditions.id);
         }
-        if (this._conditions.userId !== undefined) {
-            this._conditions.userId = md5(this._conditions.userId);
-        }
         callback();
     }
     else {
         log('Client middleware for findOne failed.', true, 'Missing parameters.');
-        callback('Missing parameters.');
-    }
-});
-
-/**
- * Middleware find for converting userId to searchable md5.
- */
-ClientSchema.pre('find', function(callback) {
-
-    if (this && this._conditions) {
-        if (this._conditions.userId !== undefined) {
-            this._conditions.userId = md5(this._conditions.userId);
-        }
-        callback();
-    }
-    else {
-        log('Client middleware for find failed.', true, 'Missing parameters.');
         callback('Missing parameters.');
     }
 });

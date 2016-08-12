@@ -54,15 +54,12 @@ module.exports = ((router) => {
             Client.findOne({ name: req.params.name })
                 .then((client) => {
                     if (!client) {
-                        // A client not found.
                         res.sendStatus(404);
                     }
-                    else if (String(client.userId) !== String(req.user._id)) {
-                        // A user not authorized.
+                    else if (client.userId !== String(req.user._id)) {
                         res.sendStatus(401);
                     }
                     else {
-                        // Remove a user.
                         client.remove();
                         res.json({ message: 'The client was removed.' });
                     }
