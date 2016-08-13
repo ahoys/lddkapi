@@ -101,7 +101,7 @@ ClientSchema.methods.verifySecret = function(secret, callback) {
                 callback(err, false);
             }
             else {
-                log('Verifying client secrets finished. Access: ', isMatch);
+                log('Verifying client secrets finished. Access: ' + isMatch);
                 callback(null, isMatch);
             }
         });
