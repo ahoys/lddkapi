@@ -1,3 +1,4 @@
+const log           = require('../../debug')('models:userSchema').debug;
 const mongoose      = require('mongoose');
 const Schema        = mongoose.Schema;
 const bcrypt        = require('bcryptjs');
@@ -26,53 +27,63 @@ const UserSchema    = new Schema({
 }, { strict: true });
 
 /**
- * Hook for handling changes in password.
- * Is triggered by calls to save().
+ * Middleware for detecting changes in user password.
+ * Returns callback() if successful, else callback(error message).
  */
 UserSchema.pre('save', function(callback) {
 
-    // The user.
     const user = this;
+    const passwordModified = user.isModified('password');
 
-    // Is the password modified.
-    if (!user.isModified('password')) return callback();
-
-    // Password has changed.
-    bcrypt.genSalt(5, function(err, salt) {
-
-        // If generating salt fails, callback with an error message.
-        if (err) return callback(err);
-
-        // Hash the generated salt.
-        bcrypt.hash(user.password, salt, function(err, hash) {
-
-            // If hashing fails, callback with an error message.
-            if (err) return callback(err);
-
-            // Save the password.
-            user.password = hash;
-            callback();
+    if (passwordModified) {
+        bcrypt.genSalt(5, function(err, salt) {
+            if (err) {
+                log('Salting the password failed.', true, err);
+                callback(err);
+            }
+            else {
+                bcrypt.hash(user.password, salt, function(err, hash) {
+                    if (err) {
+                        log('Hashing the password failed.', true, err);
+                        callback(err);
+                    }
+                    else {
+                        user.password = hash;
+                        callback();
+                    }
+                });
+            }
         });
-    });
+    }
+    else {
+        callback();
+    }
 });
 
 /**
- * Verifies the given password.
+ * Verifies the user password.
  * @param password
  * @param callback
  * @callback (error, boolean)
  */
 UserSchema.methods.verifyPassword = function(password, callback) {
 
-    // Compare the given password and the one saved into the database.
-    bcrypt.compare(password, this.password, function(err, isMatch) {
-
-        // If comparing fails, always return false as an end result.
-        if (err) return callback(err, false);
-
-        // Result as a boolean.
-        callback(null, isMatch);
-    });
+    if (password) {
+        bcrypt.compare(password, this.password, (err, isMatch) => {
+            if (err) {
+                log('Comparing passwords failed', true, err);
+                callback(err, false);
+            }
+            else {
+                log('Verifying user password finished. Access: ' + isMatch);
+                callback(null, isMatch);
+            }
+        });
+    }
+    else {
+        log('Verifying the password failed.', true, 'Missing password.');
+        callback(null, false);
+    }
 };
 
 module.exports = mongoose.model('User', UserSchema);
