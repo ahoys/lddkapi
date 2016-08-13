@@ -10,11 +10,9 @@ module.exports = ((router) => {
             User.find({}, '-_id username email')
                 .then((users) => {
                     if (!users) {
-                        // Users not found.
                         res.sendStatus(404);
                     }
                     else {
-                        // Return users.
                         res.json(users);
                     }
                 })
@@ -27,7 +25,6 @@ module.exports = ((router) => {
         .post((req, res) => {
             new User({ username: req.body.username, password: req.body.password, email: req.body.email })
                 .save(() => {
-                    // A new user saved.
                     res.json({ message: 'A new user saved.' });
                 })
                 .catch((err) => {
@@ -42,11 +39,9 @@ module.exports = ((router) => {
             User.findOne({ username: req.params.username }, '-_id username email')
                 .then((user) => {
                     if (!user) {
-                        // A user not found.
                         res.sendStatus(404);
                     }
                     else {
-                        // Return a user.
                         res.json(user);
                     }
                 })
@@ -60,15 +55,12 @@ module.exports = ((router) => {
             User.findOne({ username: req.params.username })
                 .then((user) => {
                     if (!user) {
-                        // A user not found.
                         res.sendStatus(404);
                     }
-                    else if (String(user._id) !== String(req.user._id)) {
-                        // A user not authorized.
+                    else if (user._id !== String(req.user._id)) {
                         res.sendStatus(401);
                     }
                     else {
-                        // Update user.
                         user.username = req.body.username ? req.body.username : req.user.username ;
                         user.password = req.body.password ? req.body.password : req.user.password ;
                         user.email = req.body.email ? req.body.email : req.user.email ;
@@ -86,15 +78,12 @@ module.exports = ((router) => {
             User.findOne({ username: req.params.username })
                 .then((user) => {
                     if (!user) {
-                        // A user not found.
                         res.sendStatus(404);
                     }
-                    else if (String(user._id) !== String(req.user._id)) {
-                        // A user not authorized.
+                    else if (user._id !== String(req.user._id)) {
                         res.sendStatus(401);
                     }
                     else {
-                        // Remove a user.
                         user.remove();
                         res.json({ message: 'The user was removed.' });
                     }

@@ -12,11 +12,9 @@ module.exports = ((router) => {
             Client.find({ userId: req.user._id }, '-_id name')
                 .then((clients) => {
                     if (!clients) {
-                        // Clients not found.
                         res.sendStatus(404);
                     }
                     else {
-                        // Return clients.
                         res.json(clients);
                     }
                 })
@@ -28,14 +26,13 @@ module.exports = ((router) => {
 
         .post(authController.isAuthenticated, (req, res) => {
 
-            // Generate md5 hashes of the provided parameters.
+            // Auto-generates client id and secret.
+            // These will be returned back to the user.
             const id = uuid();
             const secret = md5(uuid());
 
-            // Save the a new client.
             new Client({ name: req.body.name, secret: secret, id: id, userId: req.user._id })
-                .save()
-                .then(() => {
+                .save(() => {
                     res.json({
                         message: 'A new client saved. Please store your secret and id in a safe place.',
                         secret: secret,
