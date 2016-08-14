@@ -1,4 +1,3 @@
-const log           = require('../../debug')('models:userSchema').debug;
 const mongoose      = require('mongoose');
 const Schema        = mongoose.Schema;
 const Role          = require('./roleSchema');
@@ -48,13 +47,11 @@ UserSchema.pre('save', function(callback) {
     if (passwordModified) {
         bcrypt.genSalt(5, function(err, salt) {
             if (err) {
-                log('Salting the password failed.', true, err);
                 callback(err);
             }
             else {
                 bcrypt.hash(user.password, salt, function(err, hash) {
                     if (err) {
-                        log('Hashing the password failed.', true, err);
                         callback(err);
                     }
                     else {
@@ -81,29 +78,45 @@ UserSchema.methods.verifyPassword = function(password, callback) {
     if (password) {
         bcrypt.compare(password, this.password, (err, isMatch) => {
             if (err) {
-                log('Comparing passwords failed', true, err);
                 callback(err, false);
             }
             else {
-                log('Verifying user password finished. Access: ' + isMatch);
                 callback(null, isMatch);
             }
         });
     }
     else {
-        log('Verifying the password failed.', true, 'Missing password.');
-        callback(null, false);
+        callback('verifyPassword() is missing a parameter.', false);
     }
 };
 
-UserSchema.methods.verifyPrivilege = function(privilege, callback) {
+/**
+ * Verifies the user access to a requested privilege.
+ * @param privilege
+ * @param callback
+ */
+UserSchema.methods.verifyAccess = function(privilege, callback) {
 
     if (privilege) {
-
+        const user = this;
+        const roles = user.roles;
+        if (roles.indexOf('admin') !== -1) {
+            callback(null, true);
+        }
+        roles.forEach((role) => {
+            role.hasPrivilege((err, hasPrivilege) => {
+                if (err) {
+                    callback(err, false);
+                }
+                else {
+                    callback(null, hasPrivilege);
+                }
+            });
+        });
+        callback(null, false);
     }
     else {
-        log('Verifying the privilege failed.', true, 'Missing privilege.');
-        callback(null, false);
+        callback('verifyAccess() is missing a parameter.', false);
     }
 };
 
