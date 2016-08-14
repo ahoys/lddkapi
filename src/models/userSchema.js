@@ -97,7 +97,7 @@ UserSchema.methods.verifyPassword = function(password, callback) {
  */
 UserSchema.methods.verifyAccess = function(privilege, callback) {
 
-    if (privilege) {
+    if (privilege !== undefined) {
         const user = this;
         const roles = user.roles;
         if (roles.indexOf('admin') !== -1) {
