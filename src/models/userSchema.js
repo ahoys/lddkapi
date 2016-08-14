@@ -96,4 +96,15 @@ UserSchema.methods.verifyPassword = function(password, callback) {
     }
 };
 
+UserSchema.methods.verifyPrivilege = function(privilege, callback) {
+
+    if (privilege) {
+
+    }
+    else {
+        log('Verifying the privilege failed.', true, 'Missing privilege.');
+        callback(null, false);
+    }
+};
+
 module.exports = mongoose.model('User', UserSchema);
