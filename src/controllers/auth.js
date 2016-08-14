@@ -5,7 +5,6 @@ const BearerStrategy    = require('passport-http-bearer').Strategy;
 const User              = require('../models/userSchema');
 const Client            = require('../models/clientSchema');
 const Token             = require('../models/tokenSchema');
-const bcrypt            = require('bcryptjs');
 
 /**
  * isAuthenticated
