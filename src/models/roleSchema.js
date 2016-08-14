@@ -12,10 +12,12 @@ const RoleSchema = new Schema({
         required: true,
         lowercase: true
     },
-    privileges: {
-        type: [Schema.Types.ObjectId],
-        ref: 'Privilege'
-    }
+    privileges: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Privilege'
+        }
+    ]
 }, { strict: true });
 
 module.exports = mongoose.model('Role', RoleSchema);
