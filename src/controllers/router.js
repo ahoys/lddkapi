@@ -34,6 +34,8 @@ module.exports = ((express) => {
     require('../routes/clients')(router);
     require('../routes/authorize')(router);
     require('../routes/token')(router);
+    require('../routes/roles')(router);
+    require('../routes/privileges')(router);
 
     // Regular routes.
     // require('./members')(router);
