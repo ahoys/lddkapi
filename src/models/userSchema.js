@@ -4,7 +4,10 @@ const Schema        = mongoose.Schema;
 const Role          = require('./roleSchema');
 const bcrypt        = require('bcryptjs');
 
-const UserSchema    = new Schema({
+/**
+ * Users are the main actors in this API.
+ */
+const UserSchema = new Schema({
     username: {
         type: String,
         required: true,
