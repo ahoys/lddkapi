@@ -1,7 +1,7 @@
 const log           = require('../../debug')('models:userSchema').debug;
 const mongoose      = require('mongoose');
 const Schema        = mongoose.Schema;
-const Access        = require('./accessSchema');
+const Role          = require('./roleSchema');
 const bcrypt        = require('bcryptjs');
 
 const UserSchema    = new Schema({
@@ -25,10 +25,12 @@ const UserSchema    = new Schema({
         max: 244,
         validate: [/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/, 'Not valid email address.']
     },
-    access: {
-        type: [Access],
-        required: true
-    }
+    roles: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Role'
+        }
+    ]
 }, { strict: true });
 
 /**
