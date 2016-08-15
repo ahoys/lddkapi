@@ -90,34 +90,4 @@ UserSchema.methods.verifyPassword = function(password, callback) {
     }
 };
 
-/**
- * Verifies the user access to a requested privilege.
- * @param privilege
- * @param callback
- */
-UserSchema.methods.verifyAccess = function(privilege, callback) {
-
-    if (privilege !== undefined) {
-        const user = this;
-        const roles = user.roles;
-        if (roles.indexOf('admin') !== -1) {
-            callback(null, true);
-        }
-        roles.forEach((role) => {
-            role.hasPrivilege((err, hasPrivilege) => {
-                if (err) {
-                    callback(err, false);
-                }
-                else {
-                    callback(null, hasPrivilege);
-                }
-            });
-        });
-        callback(null, false);
-    }
-    else {
-        callback('verifyAccess() is missing a parameter.', false);
-    }
-};
-
 module.exports = mongoose.model('User', UserSchema);

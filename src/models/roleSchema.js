@@ -20,20 +20,4 @@ const RoleSchema = new Schema({
     ]
 }, { strict: true });
 
-RoleSchema.methods.hasPrivilege = function(privilege, callback) {
-
-    if (privilege !== undefined) {
-        const role = this;
-        role.privileges.forEach((privilege) => {
-            if (privilege.name === String(privilege)) {
-                callback(null, true);
-            }
-        });
-        callback(null, false);
-    }
-    else {
-        callback('hasPrivilege() is missing a parameter.', false);
-    }
-};
-
 module.exports = mongoose.model('Role', RoleSchema);
