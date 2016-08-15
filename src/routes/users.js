@@ -1,14 +1,14 @@
 const log               = require('../../debug')('routes:users').debug;
 const User              = require('../models/userSchema');
 const authController    = require('../controllers/auth');
-const resourceAccess    = require('../controllers/access')('-').hasAccessToResource;
+const hasPrivilege      = require('../controllers/privileger');
 
 module.exports = ((router) => {
 
     router.route('/users')
 
         .get(authController.isAuthenticated, (req, res) => {
-            if (!resourceAccess(req, req.user._id)) return res.sendStatus(401);
+            if (!hasPrivilege('GET /users', req.user.roles)) return res.sendStatus(401);
             User.find({}, '-_id username email')
                 .then((users) => {
                     if (!users) {
@@ -38,7 +38,7 @@ module.exports = ((router) => {
     router.route('/users/:username')
 
         .get(authController.isAuthenticated, (req, res) => {
-            if (!resourceAccess(req, req.user._id)) return res.sendStatus(401);
+            if (!hasPrivilege('GET /users/:username', req.user.roles)) return res.sendStatus(401);
             User.findOne({ username: req.params.username }, '-_id username email')
                 .then((user) => {
                     if (!user) {
@@ -55,7 +55,7 @@ module.exports = ((router) => {
         })
 
         .put(authController.isAuthenticated, (req, res) => {
-            if (!resourceAccess(req, req.user._id)) return res.sendStatus(401);
+            if (!hasPrivilege('PUT /users/:username', req.user.roles)) return res.sendStatus(401);
             User.findOne({ username: req.params.username })
                 .then((user) => {
                     if (!user) {
@@ -79,7 +79,7 @@ module.exports = ((router) => {
         })
 
         .delete(authController.isAuthenticated, (req, res) => {
-            if (!resourceAccess(req, req.user._id)) return res.sendStatus(401);
+            if (!hasPrivilege('DELETE /users/:username', req.user.roles)) return res.sendStatus(401);
             User.findOne({ username: req.params.username })
                 .then((user) => {
                     if (!user) {
