@@ -1,6 +1,7 @@
 const log               = require('../../debug')('routes:clients').debug;
 const Client            = require('../models/clientSchema');
 const authController    = require('../controllers/auth');
+const hasPrivilege      = require('../controllers/privileger');
 const uuid              = require('uuid').v4;
 const md5               = require('md5');
 
@@ -9,6 +10,7 @@ module.exports = ((router) => {
     router.route('/clients')
 
         .get(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('GET /clients', req.user.roles)) return res.sendStatus(401);
             Client.find({ userId: req.user._id }, '-_id name')
                 .then((clients) => {
                     if (!clients) {
@@ -25,12 +27,9 @@ module.exports = ((router) => {
         })
 
         .post(authController.isAuthenticated, (req, res) => {
-
-            // Auto-generates client id and secret.
-            // These will be returned back to the user.
+            if (!hasPrivilege('POST /clients', req.user.roles)) return res.sendStatus(401);
             const id = uuid();
             const secret = md5(uuid());
-
             new Client({ name: req.body.name, secret: secret, id: id, userId: req.user._id })
                 .save(() => {
                     res.json({
@@ -48,6 +47,7 @@ module.exports = ((router) => {
     router.route('/clients/:name')
 
         .delete(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('DELETE /clients/:name', req.user.roles)) return res.sendStatus(401);
             Client.findOne({ name: req.params.name })
                 .then((client) => {
                     if (!client) {
