@@ -1,7 +1,7 @@
 const log               = require('../../debug')('routes:users').debug;
 const User              = require('../models/userSchema');
 const authController    = require('../controllers/auth');
-const resourceAccess    = require('../controllers/access')('/users').hasAccessToResource;
+const resourceAccess    = require('../controllers/access')('-').hasAccessToResource;
 
 module.exports = ((router) => {
 

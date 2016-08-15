@@ -1,16 +1,16 @@
 const log               = require('../../debug')('controllers:access').debug;
 const User              = require('../models/userSchema');
 
-module.exports = (resource = '') => {
+module.exports = (combinator = ' ') => {
 
     /**
      * Returns true if the user has access to the requested resource.
-     * @param method
+     * @param req
      * @param id
      */
-    module.hasAccessToResource = (method, id) => {
-        if (method === undefined || id === undefined) return false;
-        const required = method + ' ' + resource;
+    module.hasAccessToResource = (req, id) => {
+        if (!req || !req.method || !req.url) return false;
+        const required = req.method + combinator + req.url;
         let hasAccess = false;
         User.findOne({ _id: id })
             .then((user) => {
