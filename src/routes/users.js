@@ -25,6 +25,7 @@ module.exports = ((router) => {
         })
 
         .post((req, res) => {
+            if (!hasPrivilege('POST /users', req.user.roles)) return res.sendStatus(401);
             new User({ username: req.body.username, password: req.body.password, email: req.body.email })
                 .save(() => {
                     res.json({ message: 'A new user saved.' });
