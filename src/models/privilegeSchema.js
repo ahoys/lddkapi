@@ -8,7 +8,9 @@ const Schema        = mongoose.Schema;
 const PrivilegeSchema = new Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        unique: true,
+        validate: [/^([a-zA-Z0-9ÄäÖöÅå: -_!?#.,]){2,32}$/, 'Privilege name can only contain: a-zA-Z0-9ÄäÖöÅå: -_!?#., (length: 2-32)']
     }
 }, { strict: true });
 
