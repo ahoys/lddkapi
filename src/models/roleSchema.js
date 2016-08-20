@@ -10,7 +10,9 @@ const RoleSchema = new Schema({
     name: {
         type: String,
         required: true,
-        lowercase: true
+        lowercase: true,
+        unique: true,
+        validate: [/^([a-zA-Z0-9ÄäÖöÅå: -_!?#.,]){2,32}$/, 'Role name can only contain: a-zA-Z0-9ÄäÖöÅå: -_!?#., (length: 2-32)']
     },
     privileges: [
         {
