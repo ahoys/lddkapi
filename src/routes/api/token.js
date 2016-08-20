@@ -1,5 +1,5 @@
-const authController    = require('../controllers/auth');
-const oauth2Controller  = require('../controllers/oauth2');
+const authController    = require('../../controllers/auth');
+const oauth2Controller  = require('../../controllers/oauth2');
 
 module.exports = ((router) => {
 

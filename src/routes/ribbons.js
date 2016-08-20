@@ -1,31 +1,30 @@
-const Ribbon    = require('../models/ribbonSchema');
-const debug     = require('debug');
-const log       = debug('Routes:Ribbons');
+const Ribbon            = require('../models/ribbonSchema');
+const authController    = require('../controllers/auth');
+const hasPrivilege      = require('../controllers/privileger');
 
 module.exports = ((router) => {
 
     router.route('/ribbons')
 
-        .get((request, response) => {
-
+        .get(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('GET', req.user.roles)) return res.sendStatus(401);
         })
 
-        .post((request, response) => {
-
+        .post(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('POST', req.user.roles)) return res.sendStatus(401);
         });
 
-    router.route('/ribbons/:ribbon_abbreviation')
+    router.route('/ribbons/:abbreviation')
 
-        .get((request, response) => {
-
+        .get(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('GET', req.user.roles)) return res.sendStatus(401);
         })
 
-        .put((request, response) => {
-
+        .put(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('PUT', req.user.roles)) return res.sendStatus(401);
         })
 
-        .delete((request, response) => {
-
+        .delete(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('DELETE', req.user.roles)) return res.sendStatus(401);
         });
-
 });

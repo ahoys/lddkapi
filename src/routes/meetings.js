@@ -1,31 +1,30 @@
-const Meeting   = require('../models/meetingSchema');
-const debug     = require('debug');
-const log       = debug('Routes:Meetings');
+const Meeting           = require('../models/meetingSchema');
+const authController    = require('../controllers/auth');
+const hasPrivilege      = require('../controllers/privileger');
 
 module.exports = ((router) => {
 
     router.route('/meetings')
 
-        .get((request, response) => {
-
+        .get(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('GET', req.user.roles)) return res.sendStatus(401);
         })
 
-        .post((request, response) => {
-
+        .post(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('POST', req.user.roles)) return res.sendStatus(401);
         });
 
-    router.route('/meetings/:meeting_abbreviation')
+    router.route('/meetings/:abbreviation')
 
-        .get((request, response) => {
-
+        .get(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('GET', req.user.roles)) return res.sendStatus(401);
         })
 
-        .put((request, response) => {
-
+        .put(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('PUT', req.user.roles)) return res.sendStatus(401);
         })
 
-        .delete((request, response) => {
-
+        .delete(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('DELETE', req.user.roles)) return res.sendStatus(401);
         });
-
 });

@@ -1,7 +1,7 @@
-const log               = require('../../debug')('routes:users').debug;
-const User              = require('../models/userSchema');
-const authController    = require('../controllers/auth');
-const hasPrivilege      = require('../controllers/privileger');
+const log               = require('../../../debug')('routes:users').debug;
+const User              = require('../../models/userSchema');
+const authController    = require('../../controllers/auth');
+const hasPrivilege      = require('../../controllers/privileger');
 
 module.exports = ((router) => {
 

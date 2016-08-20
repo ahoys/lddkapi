@@ -1,7 +1,7 @@
-const log               = require('../../debug')('routes:clients').debug;
-const Client            = require('../models/clientSchema');
-const authController    = require('../controllers/auth');
-const hasPrivilege      = require('../controllers/privileger');
+const log               = require('../../../debug')('routes:clients').debug;
+const Client            = require('../../models/clientSchema');
+const authController    = require('../../controllers/auth');
+const hasPrivilege      = require('../../controllers/privileger');
 const uuid              = require('uuid').v4;
 const md5               = require('md5');
 

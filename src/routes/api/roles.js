@@ -1,6 +1,6 @@
-const log               = require('../../debug')('routes:roles').debug;
-const Role              = require('../models/roleSchema');
-const authController    = require('../controllers/auth');
+const log               = require('../../../debug')('routes:roles').debug;
+const Role              = require('../../models/roleSchema');
+const authController    = require('../../controllers/auth');
 
 module.exports = ((router) => {
 

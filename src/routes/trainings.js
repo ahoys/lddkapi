@@ -1,86 +1,30 @@
-const Training  = require('../models/trainingSchema');
-const debug     = require('debug');
-const log       = debug('Routes:Training');
+const Training          = require('../models/trainingSchema');
+const authController    = require('../controllers/auth');
+const hasPrivilege      = require('../controllers/privileger');
 
 module.exports = ((router) => {
 
     router.route('/trainings')
 
-        .get((request, response) => {
-            Training.find({}, '-_id abbreviation title description', (err, trainings) => {
-                if(err){
-                    response.status(404).send(err);
-                    return false;
-                }
-                log('GET trainings successful.');
-                response.json(trainings);
-                return true;
-            })
+        .get(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('GET', req.user.roles)) return res.sendStatus(401);
         })
 
-        .post((request, response) => {
-            const training = new Training({
-                abbreviation: request.body.abbreviation,
-                title: request.body.title,
-                description: request.body.description
-            });
-            training.save((err) => {
-                if(err){
-                    response.status(400).send(err);
-                    return false;
-                }
-                log('POST training successful.');
-                response.json({ message: 'A new training added.' });
-                return true;
-            });
+        .post(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('POST', req.user.roles)) return res.sendStatus(401);
         });
 
-    router.route('/trainings/:training')
+    router.route('/trainings/:abbreviation')
 
-        .get((request, response) => {
-            Training.findOne(request.param.training, '-_id, abbreviation title description', (err, training) => {
-                if(err){
-                    response.status(404).send(err);
-                    return false;
-                }
-                log('GET ', training.title, ' successful.');
-                response.json(training);
-                return true;
-            });
+        .get(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('GET', req.user.roles)) return res.sendStatus(401);
         })
 
-        .put((request, response) => {
-            Training.findOne(request.param.training, (err, training) => {
-                if(err){
-                    response.status(400).send(err);
-                    return false;
-                }
-                training.abbreviation = request.body.abbreviation;
-                training.title = request.body.title;
-                training.description = request.body.description;
-                training.save((err) => {
-                    if(err){
-                        response.status(400).send(err);
-                        return false;
-                    }
-                    log('PUT ', training.title, ' successful.');
-                    response.json({ message: 'The requested training was modified.' });
-                    return true;
-                });
-            });
+        .put(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('PUT', req.user.roles)) return res.sendStatus(401);
         })
 
-        .delete((request, response) => {
-            Training.remove({
-                abbreviation: request.params.abbreviation
-            }, (err, training) => {
-                if(err){
-                    response.status(404).send(err);
-                    return false;
-                }
-                log('DELETE ', training.title, ' successful.');
-                response.json({ message: 'The requested training was removed.' });
-                return true;
-            });
+        .delete(authController.isAuthenticated, (req, res) => {
+            if (!hasPrivilege('DELETE', req.user.roles)) return res.sendStatus(401);
         });
 });

@@ -29,23 +29,22 @@ module.exports = ((express) => {
         });
     });
 
-    // API routes.
-    require('../routes/users')(router);
-    require('../routes/clients')(router);
-    require('../routes/authorize')(router);
-    require('../routes/token')(router);
-    require('../routes/roles')(router);
-    require('../routes/privileges')(router);
+    // API Resources.
+    require('../routes/api/users')(router);
+    require('../routes/api/clients')(router);
+    require('../routes/api/authorize')(router);
+    require('../routes/api/token')(router);
+    require('../routes/api/roles')(router);
+    require('../routes/api/privileges')(router);
 
-    // Regular routes.
-    // require('./members')(router);
-    // require('./ranks')(router);
-    // require('./decorations')(router);
-    // require('./ribbons')(router);
-    // require('./trainings')(router);
-    // require('./histories')(router);
-    // require('./news')(router);
+    // Regular Resources.
+    require('../routes/decorations');
+    require('../routes/meetings');
+    require('../routes/members');
+    require('../routes/news');
+    require('../routes/ranks');
+    require('../routes/ribbons');
+    require('../routes/trainings');
 
     return router;
-
 });

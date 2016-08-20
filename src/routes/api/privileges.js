@@ -1,6 +1,6 @@
-const log               = require('../../debug')('routes:privileges').debug;
-const Privilege         = require('../models/privilegeSchema');
-const authController    = require('../controllers/auth');
+const log               = require('../../../debug')('routes:privileges').debug;
+const Privilege         = require('../../models/privilegeSchema');
+const authController    = require('../../controllers/auth');
 
 module.exports = ((router) => {
 
