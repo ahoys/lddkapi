@@ -8,7 +8,7 @@ module.exports = ((router) => {
     router.route('/decorations')
 
         .get(authController.isAuthenticated, (req, res) => {
-            if (!hasPrivilege('GET', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('GET', req.user)) return res.sendStatus(401);
             Decoration.find({}, '-_id id localization abbreviation title description')
                 .then((decorations) => {
                     if (!decorations) {
@@ -26,7 +26,7 @@ module.exports = ((router) => {
         })
 
         .post(authController.isAuthenticated, (req, res) => {
-            if (!hasPrivilege('POST', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('POST', req.user)) return res.sendStatus(401);
             new Decoration({
                 id: req.body.id,
                 localization: req.body.localization,
@@ -46,7 +46,7 @@ module.exports = ((router) => {
     router.route('/decorations/:abbreviation')
 
         .get(authController.isAuthenticated, (req, res) => {
-            if (!hasPrivilege('GET', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('GET', req.user)) return res.sendStatus(401);
             Decoration.findOne({
                 id: req.params.id,
                 localization: req.localization
@@ -66,7 +66,7 @@ module.exports = ((router) => {
         })
 
         .put(authController.isAuthenticated, (req, res) => {
-            if (!hasPrivilege('PUT', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('PUT', req.user)) return res.sendStatus(401);
             Decoration.findOne({
                 id: req.params.id,
                 localization: req.localization
@@ -91,7 +91,7 @@ module.exports = ((router) => {
         })
 
         .delete(authController.isAuthenticated, (req, res) => {
-            if (!hasPrivilege('DELETE', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('DELETE', req.user)) return res.sendStatus(401);
             Decoration.findOne({
                 id: req.params.id,
                 localization: req.localization

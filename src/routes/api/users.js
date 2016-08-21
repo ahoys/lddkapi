@@ -8,7 +8,7 @@ module.exports = ((router) => {
     router.route('/users')
 
         .get(authController.isAuthenticated, (req, res) => {
-            if (!hasPrivilege('GET /users', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('GET /users', req.user)) return res.sendStatus(401);
             User.find({}, '-_id username email')
                 .then((users) => {
                     if (!users) {
@@ -25,7 +25,7 @@ module.exports = ((router) => {
         })
 
         .post((req, res) => {
-            if (!hasPrivilege('POST /users', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('POST /users', req.user)) return res.sendStatus(401);
             new User({ username: req.body.username, password: req.body.password, email: req.body.email })
                 .save(() => {
                     res.json({ message: 'A new user saved.' });
@@ -39,7 +39,7 @@ module.exports = ((router) => {
     router.route('/users/:username')
 
         .get(authController.isAuthenticated, (req, res) => {
-            if (!hasPrivilege('GET /users/:username', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('GET /users/:username', req.user)) return res.sendStatus(401);
             User.findOne({ username: req.params.username }, '-_id username email')
                 .then((user) => {
                     if (!user) {
@@ -56,7 +56,7 @@ module.exports = ((router) => {
         })
 
         .put(authController.isAuthenticated, (req, res) => {
-            if (!hasPrivilege('PUT /users/:username', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('PUT /users/:username', req.user)) return res.sendStatus(401);
             User.findOne({ username: req.params.username })
                 .then((user) => {
                     if (!user) {
@@ -80,7 +80,7 @@ module.exports = ((router) => {
         })
 
         .delete(authController.isAuthenticated, (req, res) => {
-            if (!hasPrivilege('DELETE /users/:username', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('DELETE /users/:username', req.user)) return res.sendStatus(401);
             User.findOne({ username: req.params.username })
                 .then((user) => {
                     if (!user) {

@@ -2,19 +2,24 @@
  * Compares requested privilege to roles.
  * If a role has the privilege, true is returned.
  * @param privilege
- * @param roles
+ * @param req_user
  * @returns {boolean}
  */
-module.exports = (privilege, roles) => {
+module.exports = (privilege, req_user) => {
+
+    // Process arguments are used to perform special operations.
+    if (process.argv[2] === '-privileges=false') return true;
+
     if (
         privilege !== undefined &&
         typeof(privilege) === 'string' &&
-        roles !== undefined &&
-        roles.constructor === Array &&
-        roles.length > 0
+        req_user !== undefined &&
+        req_user.roles !== undefined &&
+        req_user.roles.constructor === Array &&
+        req_user.length > 0
     ) {
         let hasPrivilege = false;
-        roles.forEach((role) => {
+        req_user.roles.forEach((role) => {
             const privileges = role.privileges !== undefined && role.privileges.constructor === Array
                 ? role.privileges
                 : [] ;

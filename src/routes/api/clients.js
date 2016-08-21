@@ -10,7 +10,7 @@ module.exports = ((router) => {
     router.route('/clients')
 
         .get(authController.isAuthenticated, (req, res) => {
-            if (!hasPrivilege('GET /clients', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('GET /clients', req.user)) return res.sendStatus(401);
             Client.find({ userId: req.user._id }, '-_id name')
                 .then((clients) => {
                     if (!clients) {
@@ -27,7 +27,7 @@ module.exports = ((router) => {
         })
 
         .post(authController.isAuthenticated, (req, res) => {
-            if (!hasPrivilege('POST /clients', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('POST /clients', req.user)) return res.sendStatus(401);
             const id = uuid();
             const secret = md5(uuid());
             new Client({ name: req.body.name, secret: secret, id: id, userId: req.user._id })
@@ -47,7 +47,7 @@ module.exports = ((router) => {
     router.route('/clients/:name')
 
         .delete(authController.isAuthenticated, (req, res) => {
-            if (!hasPrivilege('DELETE /clients/:name', req.user.roles)) return res.sendStatus(401);
+            if (!hasPrivilege('DELETE /clients/:name', req.user)) return res.sendStatus(401);
             Client.findOne({ name: req.params.name })
                 .then((client) => {
                     if (!client) {
