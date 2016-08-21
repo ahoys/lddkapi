@@ -28,4 +28,6 @@ const DecorationSchema    = new Schema({
     }
 }, { strict: true });
 
+DecorationSchema.index({id: 1, localization: -1}, { unique: true });
+
 module.exports = mongoose.model('Decoration', DecorationSchema);
