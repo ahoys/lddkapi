@@ -19,15 +19,19 @@ module.exports = (tag = '') => {
         str = String(str);
         log = Boolean(log);
         if (str.length > 0) {
-            const errLine = err !== undefined
-                ? err.stack.split('\n')[4].replace(/\s+/g, ' ').substr(1, 512)
-                : '' ;
-            const errMsg = err !== undefined
-                ? '\n: ' + String(err) + '\n: ' + errLine
-                : '' ;
-            console.log(tag + ': ' + str + errMsg);
-            if (log === true) {
-                file.write(new Date() + tag + ': ' + str + errMsg + '\n\n');
+            try{
+                const errLine = err !== undefined && typeof(err) === 'object' && err.stack !== undefined && err.stack.split('\n')[4] !== undefined
+                    ? '\n: ' + err.stack.split('\n')[4].replace(/\s+/g, ' ').substr(1, 512)
+                    : '' ;
+                const errMsg = err !== undefined
+                    ? '\n: ' + String(err) + errLine
+                    : '' ;
+                console.log(tag + ': ' + str + errMsg);
+                if (log === true) {
+                    file.write(new Date() + tag + ': ' + str + errMsg + '\n\n');
+                }
+            }catch(err){
+                console.log('Debugging has failed: ' + err);
             }
             return true;
         }
