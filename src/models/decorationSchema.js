@@ -24,6 +24,7 @@ const DecorationSchema    = new Schema({
     },
     description: {
         type: String,
+        required: true,
         validation: /^[a-zA-Z0-9äÄöÖåÅ!?–— '"-.,*()]{3,1024}$/
     }
 }, { strict: true });
