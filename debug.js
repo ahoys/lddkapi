@@ -23,7 +23,7 @@ module.exports = (tag = '') => {
                 const errLine = err !== undefined && typeof(err) === 'object' && err.stack !== undefined && err.stack.split('\n')[4] !== undefined
                     ? '\n: ' + err.stack.split('\n')[4].replace(/\s+/g, ' ').substr(1, 512)
                     : '' ;
-                const errMsg = err !== undefined
+                const errMsg = err !== undefined && process.env.NODE_ENV === 'development'
                     ? '\n: ' + String(err) + errLine
                     : '' ;
                 console.log(tag + ': ' + str + errMsg);

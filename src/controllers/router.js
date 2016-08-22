@@ -30,7 +30,9 @@ module.exports = ((express) => {
     });
 
     // Direct console manipulation.
-    require('./commands')();
+    if (process.env.NODE_ENV === 'development') {
+        require('./commands')();
+    }
 
     // API Resources.
     require('../routes/api/users')(router);

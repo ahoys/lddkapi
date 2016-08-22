@@ -1,4 +1,5 @@
 require('babel-core/register');
+process.env.NODE_ENV = 'development';
 
 // Base setup.
 const config_app        = require('config').get('Application');
