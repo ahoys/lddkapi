@@ -7,9 +7,6 @@
  */
 module.exports = (privilege, req_user) => {
 
-    // Process arguments are used to perform special operations.
-    if (process.argv[2] === '-privileges=false') return true;
-
     if (
         privilege !== undefined &&
         typeof(privilege) === 'string' &&
