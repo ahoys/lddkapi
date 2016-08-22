@@ -29,6 +29,9 @@ module.exports = ((express) => {
         });
     });
 
+    // Direct console manipulation.
+    require('./commands')();
+
     // API Resources.
     require('../routes/api/users')(router);
     require('../routes/api/clients')(router);
