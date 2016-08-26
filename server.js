@@ -1,9 +1,7 @@
 require('babel-core/register');
-process.env.NODE_ENV = 'development';
-
-// Base setup.
 const config_app        = require('config').get('Application');
 const config_db         = require('config').get('Database');
+process.env.NODE_ENV    = config_app.get('phase');
 const log               = require('./debug')('server').debug;
 const mongoose          = require('mongoose');
 const express           = require('express');
@@ -22,7 +20,7 @@ mongoose.connect(config_db.get('url'), config_db.get('port'));
 mongoose.connection.on('error', log.bind(log, 'Database connection failed.', true));
 
 // Db: verify the connection.
-if(mongoose.connection.readyState !== 1 && mongoose.connection.readyState !== 2){
+if (mongoose.connection.readyState !== 1 && mongoose.connection.readyState !== 2) {
     log('Mongoose connection failed with a code: ' + mongoose.connection.readyState, true);
     process.exit();
 }
@@ -42,7 +40,7 @@ app.use(session({
     resave: true
 }));
 
-// App: register the router.
+// App: register routes.
 app.use('/api', router);
 
 // App: start the server.

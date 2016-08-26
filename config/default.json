@@ -3,67 +3,12 @@
     "title": "LDD Kyllikki API",
     "port": 8080,
     "author": "Ari Höysniemi",
-    "version": "0.1"
+    "version": "0.1",
+    "phase": "development"
   },
   "Database": {
     "url": "mongodb://127.0.0.1/LDDK_API_DB",
     "port": 27017,
     "localization": ["fi", "en"]
-  },
-  "UNIT_TESTS": {
-    "url": "mongodb://127.0.0.1:27017/LDDK_API_DB",
-    "port": 27017,
-    "names_ok": [
-      "JohnDoe",
-      "Sho",
-      "LooooooooooooooooongName",
-      "lowercase",
-      "UPPERCASE"
-    ],
-    "pass_ok": [
-      "GoodP1",
-      "GoodPass0!",
-      "GoodPass1",
-      "GoodPass7!#¤%&()=?-_^@$€.,*",
-      "6442ACc8PXmaqSBvdtvqH2msPCFfrzTnQceex5kZqLUEmfQH8VQgV4AFytxQ7Z9K"
-    ],
-    "email_ok": [
-      "jo@te.co",
-      "john.doe@test.com",
-      "thisisadamnlongemailthatsomeonemighthavetologintoourserviceperhapshuh@yesevenhisproviderhasalongaccess.com"
-    ],
-    "names_fail": [
-      "",
-      "Sh",
-      "TooLooooooooooooooongName",
-      "Numbers123",
-      "1234",
-      "<hax>",
-      "Ääkkösiä",
-      "Bende_r",
-      "Bende-r",
-      "Shouting!"
-    ],
-    "pass_fail": [
-      "",
-      "Fail1",
-      "FailPass",
-      "FailPass<hax>",
-      "FailPass\"",
-      "failpass1",
-      "FAILPASS1",
-      "FailPass7♥",
-      "FailPa\\ss7",
-      "65HRrS4SVFrpFdTwSN3FKNfqSYgrPxHhQ4ThzBbZVFtKKd5MzwQQEBnJndDEKzwr7"
-    ],
-    "email_fail": [
-      "",
-      "@test.com",
-      "a@a.a",
-      "abcdef@com",
-      "abcdef@",
-      "@",
-      "john<doe>@test.com"
-    ]
   }
 }
